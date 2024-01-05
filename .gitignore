@@ -1,0 +1,12 @@
+*~
+.*
+!.gitignore
+classic
+MANIFEST
+Makefile
+Makefile.*
+ipydeps.py
+cpipydeps.py
+fixup.py
+worksheets/*-old.ipynb
+worksheets/get.py
