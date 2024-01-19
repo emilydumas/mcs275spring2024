@@ -1,5 +1,6 @@
 """Robot motion simulation with simple text-based graphics"""
 # MCS 275 Spring 2024 David Dumas
+# Lecture 5
 
 from plane import Vector2, Point2
 import bots
@@ -11,12 +12,11 @@ height = 30
 current_bots = []
 for _ in range(5):
     P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
-    current_bots.append(bots.Bot(position=P))
+    current_bots.append(bots.WanderBot(position=P))
 
-# Uncomment when there is another Bot type
-# for _ in range(5):
-#    P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
-#    current_bots.append(bots.WanderBot(position=P, active_time=3))
+for _ in range(5):
+    P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
+    current_bots.append(bots.DestructBot(position=P, active_time=3))
 
 n = 0
 while True:
