@@ -33,3 +33,45 @@ class Bot:
 
     def update(self):
         """Advance one time step (do nothing in this case)"""
+
+
+class WanderBot(Bot):
+    """
+    A robot that at each time step moves up, down, left or
+    right (choosing one at random).
+    """
+
+    def update(self):
+        "Take a random step up, down, left, or right"
+        possible_steps = [
+            plane.Vector2(1, 0),
+            plane.Vector2(-1, 0),
+            plane.Vector2(0, 1),
+            plane.Vector2(0, -1),
+        ]
+        # choose one of those steps to take
+        step = random.choice(possible_steps)
+        # move
+        self.move_by(step)  # actually calls move_by from Bot
+
+
+class DestructBot(Bot):
+    "Bot that sits still for a while and then deactivates"
+
+    def __init__(self, position, active_time):
+        """
+        Initialize a DestructBot that remains active for
+        `active_time` steps
+        """
+        # Call the Bot constructor, forwarding it some of the arguments
+        super().__init__(position)
+        # DestructBot-specific stuff
+        self.active_time = active_time  # never change
+        self.remaining_time = active_time  # counts down
+
+    def update(self):
+        "Decide whether to deactivate or not"
+        if self.active:
+            self.remaining_time -= 1
+            if self.remaining_time == 0:
+                self.active = False  # turn off
