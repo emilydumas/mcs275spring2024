@@ -67,7 +67,7 @@ class DestructBot(Bot):
         self.remaining_time = active_time  # decreases by 1 each update
 
     def update(self):
-        "Deactivate if it's time"
+        "Deactivate if active_time has elapsed"
         if self.active:
             self.remaining_time -= 1
             if self.remaining_time == 0:
