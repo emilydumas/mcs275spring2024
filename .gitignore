@@ -9,4 +9,10 @@ ipydeps.py
 cpipydeps.py
 fixup.py
 worksheets/*-old.ipynb
+worksheets/*work.ipynb
+homework/*-old.ipynb
+homework/*work.ipynb
 worksheets/get.py
+worksheets/images/work
+projects/*-old.ipynb
+projects/*work.ipynb
