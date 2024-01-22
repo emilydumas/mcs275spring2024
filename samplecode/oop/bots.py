@@ -9,6 +9,8 @@ import random
 class Bot:
     """Base class for all robots.  Sits in one place forever."""
 
+    symbol = "B"  # class attribute used to display in botsimulation_fancy
+
     def __init__(self, position):
         """Setup with initial position `position` (a plane.Point2 instance)"""
         self.active = True
@@ -39,20 +41,60 @@ class Bot:
 class WanderBot(Bot):
     """Robot that moves randomly (up,down,left,right)"""
 
+    symbol = "W"
+    possible_steps = [  # class attribute
+        plane.Vector2(1, 0),
+        plane.Vector2(-1, 0),
+        plane.Vector2(0, 1),
+        plane.Vector2(0, -1),
+    ]
+
     def update(self):
         "Take one step, randomly"
-        possible_steps = [
-            plane.Vector2(1, 0),
-            plane.Vector2(-1, 0),
-            plane.Vector2(0, 1),
-            plane.Vector2(0, -1),
-        ]
-        step = random.choice(possible_steps)
+        step = random.choice(self.possible_steps)
         self.move_by(step)
+
+
+class FastWanderBot(WanderBot):
+    "robot that takes random steps, including diagonals"
+    symbol = "F"
+    possible_steps = [
+        plane.Vector2(1, 0),
+        plane.Vector2(-1, 0),
+        plane.Vector2(0, 1),
+        plane.Vector2(0, -1),
+        plane.Vector2(1, 1),
+        plane.Vector2(-1, 1),
+        plane.Vector2(1, -1),
+        plane.Vector2(-1, -1),
+    ]
+
+
+# This works
+# class FastWanderBot(WanderBot):
+#     possible_steps = WanderBot.possible_steps +
+#     [
+#         plane.Vector2(1, 1),
+#         plane.Vector2(-1, 1),
+#         plane.Vector2(1, -1),
+#         plane.Vector2(-1, -1),
+#     ]
+
+# This will not work
+# class FastWanderBot(WanderBot):
+#     possible_steps = WanderBot.possible_steps.extend(
+#     [
+#         plane.Vector2(1, 1),
+#         plane.Vector2(-1, 1),
+#         plane.Vector2(1, -1),
+#         plane.Vector2(-1, -1),
+#     ])
 
 
 class DestructBot(Bot):
     """Robot that sits in one place for a while and then deactivates"""
+
+    symbol = "D"
 
     def __init__(self, position, active_time):
         """
@@ -72,3 +114,41 @@ class DestructBot(Bot):
             self.remaining_time -= 1
             if self.remaining_time == 0:
                 self.active = False
+
+
+class PatrolBot(Bot):
+    """Robot that walks back and forth along line segment"""
+
+    symbol = "P"
+
+    state_transitions = {
+        "out": "back",
+        "back": "out",
+    }
+
+    def __init__(self, position, direction, steps):
+        """
+        Initialize a robot at `position` that takes `steps`
+        steps in `direction` then turns around, repeats.
+        """
+        # Call Bot constructor
+        super().__init__(position)
+        # Do Patrol-specific initialization
+        self.vectors = {
+            "out": direction,
+            "back": (-1) * direction,
+        }
+        self.steps = steps  # constant
+        self.state = "out"  # either "out" or "back"
+        self.n = 0  # number of steps so far in the current state
+
+    def update(self):
+        "Take a step and turn around if appropriate"
+        # Take a step
+        self.move_by(self.vectors[self.state])
+        self.n += 1
+        # Is it time to turn around?
+        if self.n == self.steps:
+            # indeed, turn around
+            self.n = 0
+            self.state = self.state_transitions[self.state]
