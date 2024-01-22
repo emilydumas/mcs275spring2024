@@ -9,6 +9,8 @@ import random
 class Bot:
     """Base class for all robots.  Sits in one place forever."""
 
+    symbol = "B"  # character used to represent in botsimulation_fancy
+
     def __init__(self, position):
         """Setup with initial position `position` (a plane.Point2 instance)"""
         self.active = True
@@ -39,20 +41,39 @@ class Bot:
 class WanderBot(Bot):
     """Robot that moves randomly (up,down,left,right)"""
 
+    symbol = "W"
+    possible_steps = [  # class attribute
+        plane.Vector2(1, 0),
+        plane.Vector2(-1, 0),
+        plane.Vector2(0, 1),
+        plane.Vector2(0, -1),
+    ]
+
     def update(self):
         "Take one step, randomly"
-        possible_steps = [
-            plane.Vector2(1, 0),
-            plane.Vector2(-1, 0),
-            plane.Vector2(0, 1),
-            plane.Vector2(0, -1),
-        ]
-        step = random.choice(possible_steps)
+        step = random.choice(self.possible_steps)
         self.move_by(step)
+
+
+class FastWanderBot(WanderBot):
+    "Similar to WanderBot but can move diagonally"
+    symbol = "F"
+    possible_steps = [
+        plane.Vector2(1, 0),
+        plane.Vector2(-1, 0),
+        plane.Vector2(0, 1),
+        plane.Vector2(0, -1),
+        plane.Vector2(1, 1),
+        plane.Vector2(1, -1),
+        plane.Vector2(-1, 1),
+        plane.Vector2(-1, -1),
+    ]
 
 
 class DestructBot(Bot):
     """Robot that sits in one place for a while and then deactivates"""
+
+    symbol = "D"
 
     def __init__(self, position, active_time):
         """
@@ -72,3 +93,34 @@ class DestructBot(Bot):
             self.remaining_time -= 1
             if self.remaining_time == 0:
                 self.active = False
+
+
+class PatrolBot(Bot):
+    """Robot walks back and forth along a straight line segment"""
+
+    symbol = "P"
+    state_transitions = {
+        "out": "back",
+        "back": "out",
+    }
+
+    def __init__(self, position, direction, steps):
+        # Call Bot constructor which requires only position
+        super().__init__(position)
+        self.vectors = {
+            "out": direction,
+            "back": (-1) * direction,
+        }
+        self.steps = steps  # constant
+        self.state = "out"  # "out" or "back"
+        self.n = 0  # how many steps we've taken in current state
+
+    def update(self):
+        # take one step -- what direction?
+        #      e.g.  self.vectors["out"]
+        self.move_by(self.vectors[self.state])
+        self.n += 1
+        if self.n == self.steps:
+            # flip to other state
+            self.state = self.state_transitions[self.state]
+            self.n = 0

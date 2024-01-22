@@ -23,7 +23,18 @@ for _ in range(5):
     current_bots.append(bots.WanderBot(position=P))
 for _ in range(5):
     P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
+    current_bots.append(bots.FastWanderBot(position=P))
+for _ in range(5):
+    P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
     current_bots.append(bots.DestructBot(position=P, active_time=20))
+
+current_bots.append(
+    bots.PatrolBot(position=Point2(5, 5), direction=Vector2(1, 1), steps=4)
+)
+
+current_bots.append(
+    bots.PatrolBot(position=Point2(10, 2), direction=Vector2(-1, 0), steps=7)
+)
 
 no_symbol_bot_types = []
 

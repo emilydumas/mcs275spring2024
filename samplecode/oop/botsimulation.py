@@ -36,5 +36,5 @@ while True:
     input()
 
     for b in current_bots:
-        b.update()
+        b.update()  # what type of object is b?  Doesn't matter
     n += 1
