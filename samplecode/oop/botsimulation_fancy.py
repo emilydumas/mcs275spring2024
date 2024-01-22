@@ -1,5 +1,6 @@
 """Robot motion simulation with unicode text graphics"""
 # MCS 275 Spring 2024 David Dumas
+# Lecture 6
 
 # Bots are shown as characters.  For any Bot class that has an
 # attribute `symbol`, the value of that attribute is used as the

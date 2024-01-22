@@ -1,6 +1,6 @@
 """Classes representing robots in a simulation"""
 # MCS 275 Spring 2024 David Dumas
-# Lecture 5
+# Lectures 5-6
 
 import plane
 import random
