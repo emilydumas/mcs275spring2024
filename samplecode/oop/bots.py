@@ -105,22 +105,28 @@ class PatrolBot(Bot):
     }
 
     def __init__(self, position, direction, steps):
-        # Call Bot constructor which requires only position
+        """
+        Initialize a robot at `position` that takes `steps`
+        steps in `direction` then turns around, repeats.
+        """
+        # Call Bot constructor
         super().__init__(position)
+        # Do Patrol-specific initialization
         self.vectors = {
             "out": direction,
             "back": (-1) * direction,
         }
         self.steps = steps  # constant
-        self.state = "out"  # "out" or "back"
-        self.n = 0  # how many steps we've taken in current state
+        self.state = "out"  # either "out" or "back"
+        self.n = 0  # number of steps so far in the current state
 
     def update(self):
-        # take one step -- what direction?
-        #      e.g.  self.vectors["out"]
+        "Take a step and turn around if appropriate"
+        # Take a step
         self.move_by(self.vectors[self.state])
         self.n += 1
+        # Is it time to turn around?
         if self.n == self.steps:
-            # flip to other state
-            self.state = self.state_transitions[self.state]
+            # indeed, turn around
             self.n = 0
+            self.state = self.state_transitions[self.state]

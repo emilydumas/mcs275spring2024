@@ -27,6 +27,26 @@ for _ in range(5):
 for _ in range(5):
     P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
     current_bots.append(bots.DestructBot(position=P, active_time=20))
+for _ in range(5):
+    P = Point2(random.randint(0, width - 1), random.randint(0, height - 1))
+    current_bots.append(bots.FastWanderBot(position=P))
+
+current_bots.append(
+    bots.PatrolBot(
+        position=Point2(2, 2),
+        direction=Vector2(1, 1),
+        steps=20,
+    )
+)
+
+current_bots.append(
+    bots.PatrolBot(
+        position=Point2(58, 5),
+        direction=Vector2(-1, 0),
+        steps=27,
+    )
+)
+
 
 current_bots.append(
     bots.PatrolBot(position=Point2(5, 5), direction=Vector2(1, 1), steps=4)
