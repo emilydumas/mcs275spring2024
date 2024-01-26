@@ -5,34 +5,43 @@
 
 def fac(n, verbose=False):
     "Return the factorial of a nonnegative integer n"
+    # Optional: Show all function calls
     if verbose:
         print("fac({}) called".format(n))
+    # Optional: Check for invalid n
     if n < 0:
         raise ValueError("Factorial requires nonnegative argument")
+    # stop condition
     if n <= 1:
         # 0! = 1 and 1! = 1
         return 1
+    # recursive call
     return n * fac(n - 1, verbose)
 
 
-# WARNING: Ridiculously inefficient recursive implementation!
+# WARNING: For large n, this is ridiculously inefficient.
+# More discussion in lecture 9.
 def fib(n, verbose=False):
     "nth Fibonacci number"
+    # Optional: Show all function calls
     if verbose:
         print("fib({}) called".format(n))
-    # stop condition?
+    # stop condition
     if n <= 1:
         # F_0=0 and F_1=1
         return n
-    # recursive case
+    # recursive calls
     return fib(n - 1, verbose) + fib(n - 2, verbose)
+    # NOTE: ^--------------------^--- two self-calls = SLOW
 
 
 # Paper-folding sequence
+# ----------------------
 
-# Convention:
-# represent a binary sequence like 0110 as a list of integers
-# [0,1,1,0]
+# For each nonnegative integer n, PFS(n) is a sequence of binary
+# digits, e.g. PFS(2) is 1101100
+# We represent such binary sequences as lists of integers, e.g.
+# PFS(2) will return [1,1,0,1,1,0,0]
 
 # Key observation
 # PFS(n) = PFS(n-1), then 1, then reverse-order 0/1-flipped PFS(n-1)
