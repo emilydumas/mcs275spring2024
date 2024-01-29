@@ -1,4 +1,4 @@
-# MCS 275 Spring 2024 Lecture 8
+# MCS 275 Spring 2024 Lectures 8 and 9
 # Recursion examples
 # David Dumas
 
@@ -19,6 +19,14 @@ def fac(n, verbose=False):
     return n * fac(n - 1, verbose)
 
 
+def fac_iterative(n):
+    "Compute the factorial of n without recursion"
+    prod = 1  # product so far (STATE)
+    for i in range(2, n + 1):  # i starts at 1, ends at n
+        prod *= i
+    return prod
+
+
 # WARNING: For large n, this is ridiculously inefficient.
 # More discussion in lecture 9.
 def fib(n, verbose=False):
@@ -33,6 +41,17 @@ def fib(n, verbose=False):
     # recursive calls
     return fib(n - 1, verbose) + fib(n - 2, verbose)
     # NOTE: ^--------------------^--- two self-calls = SLOW
+
+
+def fib_iterative(n):
+    "Iterative computation of nth term in Fibonacci sequence"
+    if n == 0:
+        return 0
+    a = 0  # F_0
+    b = 1  # F_1
+    for _ in range(n - 1):
+        a, b = b, a + b  # replaces F_(i-1), F_i with F_i, F_(i+1)
+    return b
 
 
 # Paper-folding sequence
