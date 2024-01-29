@@ -78,6 +78,11 @@ class Vector2:
             print("called: {}.__abs__".format(self.__class__.__name__))
         return math.sqrt(self.x**2 + self.y**2)
 
+    def __eq__(self, other):
+        "equality means both coordinates are the same"
+        # TODO: Consider whether to type-check `other`
+        return self.x == other.x and self.y == other.y
+
 
 class Point2:
     "Point in the plane specified by coordinates"
@@ -131,3 +136,8 @@ class Point2:
             print("called: {}.__radd__".format(self.__class__.__name__))
         # declare that it's just the same as point+vec
         return self + other  # will call Point2.__add__
+
+    def __eq__(self, other):
+        "equality means both coordinates are the same"
+        # TODO: Consider whether to type-check `other`
+        return self.x == other.x and self.y == other.y
