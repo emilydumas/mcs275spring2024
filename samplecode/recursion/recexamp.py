@@ -28,8 +28,8 @@ def fac_iterative(n):
 
 
 # WARNING: For large n, this is ridiculously inefficient.
-# More discussion in lecture 9.
-def fib(n, verbose=False):
+# The more efficient recursive method is memoization (below).
+def fib(n, verbose=False):   # 1
     "nth Fibonacci number"
     # Optional: Show all function calls
     if verbose:
@@ -39,9 +39,30 @@ def fib(n, verbose=False):
         # F_0=0 and F_1=1
         return n
     # recursive calls
-    return fib(n - 1, verbose) + fib(n - 2, verbose)
+    return fib(n - 1, verbose) + fib(n - 2, verbose)  # + (# calls for n-1) + (# calls for n-2)
     # NOTE: ^--------------------^--- two self-calls = SLOW
 
+fib_cache = {
+    0:0,  # n=0 then F_n=0
+    1:1,  # n=1 then F_n=1
+}  # dict with values of n as keys and F_n as values
+
+def fib_memoized(n, verbose=False):
+    "nth Fibonacci number"
+    # Optional: Show all function calls
+    if verbose:
+        print("fib({}) called".format(n))
+
+    # Check to see if this value is already in the cache
+    # If so, return it.  This includes the stop condition for n=0,1
+    if n in fib_cache:  # reminder: in for dict means "is a key of"
+        return fib_cache[n] # we know F_n, return it without computation
+
+    # recursive calls
+    res = fib_memoized(n - 1, verbose) + fib_memoized(n - 2, verbose)
+    # Store the fact that `fib(n)`` returns `res` in the cache
+    fib_cache[n] = res
+    return res
 
 def fib_iterative(n):
     if n == 0:
@@ -109,18 +130,53 @@ def timing_study():
 
     print("\n\n" + "-" * 72)
     print("FIBONACCI")
-    for n in range(36):
+    for n in range(35):
         t0 = time.time()
         y = fib(n)
         t1 = time.time()
         trec = t1 - t0  # amount of time it took to compute fac(n)
 
         t0 = time.time()
+        fib_cache.clear()
+        fib_cache[0]=0
+        fib_cache[1]=1
+        y = fib_memoized(n)
+        t1 = time.time()
+        tmemo = t1 - t0  # amount of time it took to compute fac(n)
+
+        t0 = time.time()
         y = fib_iterative(n)
         t1 = time.time()
         titer = t1 - t0  # amount of time it took to compute fac_iterative(n)
 
-        print("fib({:3d}): rec took {:.4f}s, iter took {:.4f}s".format(n, trec, titer))
+        print("fib({:3d}): rec {:.5f}s, memo {:.5f}s iter {:.5f}s".format(
+            n,
+            trec,
+            tmemo,
+            titer,
+        ))
+
+    print("\n\n" + "-" * 72)
+    print("LARGE-n FIBONACCI")
+    for n in range(0,995,5):
+        t0 = time.time()
+        fib_cache.clear()
+        fib_cache[0]=0
+        fib_cache[1]=1
+        y = fib_memoized(n)
+        t1 = time.time()
+        tmemo = t1 - t0  # amount of time it took to compute fac(n)
+
+        t0 = time.time()
+        y = fib_iterative(n)
+        t1 = time.time()
+        titer = t1 - t0  # amount of time it took to compute fac_iterative(n)
+
+        print("fib({:3d}): memo {:.5f}s iter {:.5f}s".format(
+            n,
+            tmemo,
+            titer,
+        ))
 
 
 if __name__ == "__main__":  # means "if run as a script"
