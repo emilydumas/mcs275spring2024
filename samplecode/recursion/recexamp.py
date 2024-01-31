@@ -2,12 +2,15 @@
 # Recursion examples
 # David Dumas
 
+call_counts = {"fib": 0}
+
 
 def fac(n, verbose=False):
     "Return the factorial of a nonnegative integer n"
     # Optional: Show all function calls
     if verbose:
         print("fac({}) called".format(n))
+    call_counts["fib"] += 1  # record this call
     # Optional: Check for invalid n
     if n < 0:
         raise ValueError("Factorial requires nonnegative argument")
@@ -26,36 +29,39 @@ def fac_iterative(n):
         prod *= i
     return prod
 
-call_count = {
-    "fib":0
-}
 
 # WARNING: For large n, this is ridiculously inefficient.
-# See memoized version below.
-def fib(n, verbose=False):    # 1
+# The more efficient recursive method is memoization (below).
+def fib(n, verbose=False):  # 1
     "nth Fibonacci number"
     # Optional: Show all function calls
     if verbose:
         print("fib({}) called".format(n))
-    call_count["fib"] += 1  # asks the global var call_count to change a value.
+    call_counts["fib"] += 1  # asks the global var call_count to change a value.
     # stop condition
     if n <= 1:
         # F_0=0 and F_1=1
         return n
     # recursive calls
-    return fib(n - 1, verbose) + fib(n - 2, verbose)   # + T(n-1) + T(n-2)
+    return fib(n - 1, verbose) + fib(
+        n - 2, verbose
+    )  # + (# calls for n-1) + (# calls for n-2)
     # NOTE: ^--------------------^--- two self-calls = SLOW
 
-#   n 0,1,2,3,4,5,6
-# F_n 0,1,1,2,3,5,8
-# dict storing known fibonacci numbers
-# key=n value=F_n
-fib_cache = {
-    0:0,  # n=0 then F_n=0
-    1:1,  # n=1 then F_n=1
- }
 
-# Still recursive, but memoized
+fib_cache = {
+    0: 0,  # n=0 then F_n=0
+    1: 1,  # n=1 then F_n=1
+}  # dict with values of n as keys and F_n as values
+
+
+def fib_clear_cache():
+    "Clear the cache used by fib_memoized"
+    fib_cache.clear()
+    for n in range(2):
+        fib_cache[n] = n
+
+
 def fib_memoized(n, verbose=False):
     "nth Fibonacci number"
     # Optional: Show all function calls
@@ -63,11 +69,11 @@ def fib_memoized(n, verbose=False):
         print("fib_memoized({}) called".format(n))
 
     # Use stored result if available (provides stop condition)
-    if n in fib_cache: # recall membership testing for dict tests for KEYS
+    if n in fib_cache:  # recall membership testing for dict tests for KEYS
         return fib_cache[n]
     # Otherwise, resume the recursive approach.
     res = fib_memoized(n - 1, verbose) + fib_memoized(n - 2, verbose)
-    fib_cache[n] = res # store this result in the cache
+    fib_cache[n] = res  # store this result in the cache
     return res
 
 
@@ -137,29 +143,71 @@ def timing_study():
 
     print("\n\n" + "-" * 72)
     print("FIBONACCI")
-    for n in range(38):
+    prev_trec = 0
+    for n in range(15, 36):
         t0 = time.time()
         y = fib(n)
         t1 = time.time()
         trec = t1 - t0  # amount of time it took to compute fac(n)
 
+        fib_clear_cache()  # so each test of `n` is independent, clear cache
         t0 = time.time()
-        fib_cache = {0:0, 1:1}
         y = fib_memoized(n)
         t1 = time.time()
-        tmemo = t1 - t0  # amount of time it took to compute fac_iterative(n)
+        tmemo = t1 - t0  # amount of time it took to compute fac(n)
 
         t0 = time.time()
         y = fib_iterative(n)
         t1 = time.time()
         titer = t1 - t0  # amount of time it took to compute fac_iterative(n)
 
-        print("fib({:3d}): rec {:.5f}s, memo {:.5f}s, iter {:.5f}s".format(
-            n, 
-            trec, 
-            tmemo,
-            titer,
-        ))
+        # If the last value of `n` took at least 0.1 milliseconds, report the
+        # percentage growth in trec for this iteration.
+        if abs(prev_trec > 0.0001):
+            incstr = " ({:+.1f}%)".format(100.0 * (trec - prev_trec) / (prev_trec))
+        else:
+            incstr = ""
+
+        print(
+            "fib({:3d}): rec {:.5f}s{}, memo {:.5f}s iter {:.5f}s".format(
+                n,
+                trec,
+                incstr,
+                tmemo,
+                titer,
+            )
+        )
+        prev_trec = trec
+
+    print("\n\n" + "-" * 72)
+    print("LARGE-n FIBONACCI")
+    for n in range(0, 996, 100):
+        fib_clear_cache()  # so each test of `n` is independent, clear cache
+        t0 = time.time()
+        y = fib_memoized(n)
+        t1 = time.time()
+        tmemo = t1 - t0  # amount of time it took to compute fac(n)
+
+        t0 = time.time()
+        y = fib_iterative(n)
+        t1 = time.time()
+        titer = t1 - t0  # amount of time it took to compute fac_iterative(n)
+
+        print(
+            "fib({:3d}): memo {:.5f}s iter {:.5f}s".format(
+                n,
+                tmemo,
+                titer,
+            )
+        )
+
+    print("\n\n" + "-" * 72)
+    print("fib call counts")
+    print("{:2s} {:6s}".format("n", "calls"))
+    for n in range(15):
+        call_counts["fib"] = 0
+        y = fib(n)
+        print("{:2d} {:5d}".format(n, call_counts["fib"]))
 
 
 if __name__ == "__main__":  # means "if run as a script"
