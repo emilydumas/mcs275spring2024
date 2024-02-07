@@ -1,4 +1,4 @@
-# MCS 275 Spring 2024 Lecture 12
+# MCS 275 Spring 2024 Lectures 12-13
 "Recursive comparison sorting examples"
 
 
@@ -48,6 +48,53 @@ def mergesort(L, verbose=False):
     L1 = mergesort(L[middle:], verbose=verbose)  # sorted second half
     return merge(L0, L1, verbose=verbose)  # merge sorted lists
 
+
+def partition(L,start,end):
+    """
+    Partition the part of list `L` between indices `start` and `end`
+    (including `start` but not including `end`) in place, using the
+    item at index `end-1` as the pivot.
+    Returns the index where the pivot is after partitioning.
+    """
+    # src - the index we're looking at
+    # dst - where we'll put the next small item
+    dst = start
+    pivot = L[end-1]
+    # scan through `L[start:end]` looking for small items
+    for src in range(start,end):
+        if L[src] < pivot:
+            # move this small item near the beginning
+            L[src],L[dst] = L[dst],L[src]
+            dst += 1
+    # Put the pivot in its final place (moving whatever)
+    # is there to the end
+    L[end-1],L[dst] = L[dst],L[end-1]
+    return dst
+
+
+def quicksort(L,start=0,end=None):
+    """
+    In place recursive quicksort of the part of `L` between
+    indices `start` and `end`. Defaults to using the entire
+    list if `start`,`end` not given.
+    """
+    if end==None:
+        # fill end len(L) as the default value
+        end = len(L)
+    # stop condition
+    if end-start <= 1:
+        # any 0- or 1-element list IS sorted
+        print(L[start:end],"already sorted")
+        return
+    # split
+    k = partition(L,start,end)
+    print(L[start:k],L[k:k+1],L[k+1:end])
+    # recursive call(s)
+    quicksort(L,start,k)
+    # note: L[k:k+1] is already in the right place.
+    quicksort(L,k+1,end)
+    # merge (nothing to do)
+    return
 
 def demo():
     "Demonstrate the sorting functions above"
