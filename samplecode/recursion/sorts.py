@@ -49,6 +49,60 @@ def mergesort(L, verbose=False):
     return merge(L0, L1, verbose=verbose)  # merge sorted lists
 
 
+def partition(L,start,end):
+    """
+    Partition the part of the list `L` from index `start` up to
+    but not including index `end`, using the element at index `end-1`
+    as the pivot.  Returns the index where the pivot element ends up
+    (i.e. afterward, `L[return value]` is equal to the initial value of
+    `L[end-1]`)
+    """
+    # scan through the list and accumulate "small" (<pivot) at the
+    # beginning
+    src = start
+    dst = start
+    pivot = L[end-1] # so comparison to pivot is evident
+    for src in range(start,end):
+        if L[src] < pivot:
+            # found small element, move near start
+            L[src],L[dst] = L[dst],L[src]
+            dst += 1
+
+    # Put the pivot in its correct final position
+    L[dst],L[end-1] = L[end-1],L[dst]
+    # Return the position where the pivot ended up
+    return dst
+
+
+def quicksort(L,start=0,end=None):
+    """
+    In-place quicksort of the part of list L from index start to end
+    (defaulting to the entire list if start,end not given)
+    """
+    # fill in default value of end
+    if end==None:
+        end = len(L)
+    # stop condition of recursion
+    if end-start <= 1:
+        print("already sorted: ",L[start:end])
+        return
+    # split
+    k = partition(L,start,end)
+
+    # display what's happening
+    print("partition: ...",L[start:k],L[k:k+1],L[k+1:end],"...")
+
+    # recursion
+    quicksort(L,start,k) # sort things before the pivot
+    quicksort(L,k+1,end) # sort things after the pivot
+
+    # merge (nothing to do)
+
+    # return
+    return
+        
+
+
 def demo():
     "Demonstrate the sorting functions above"
 
