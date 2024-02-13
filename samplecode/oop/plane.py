@@ -80,7 +80,8 @@ class Vector2:
 
     def __eq__(self, other):
         "equality means both coordinates are the same"
-        # TODO: Consider whether to type-check `other`
+        if not isinstance(other, self.__class__):
+            return False
         return self.x == other.x and self.y == other.y
 
 
@@ -139,5 +140,6 @@ class Point2:
 
     def __eq__(self, other):
         "equality means both coordinates are the same"
-        # TODO: Consider whether to type-check `other`
+        if not isinstance(other, self.__class__):
+            return False
         return self.x == other.x and self.y == other.y
