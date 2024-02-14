@@ -1,4 +1,4 @@
-# MCS 275 Spring 2024 Lecture 15
+# MCS 275 Spring 2024 Lectures 15-16
 # David Dumas
 "Classes representing tree-like data structures"
 
@@ -31,32 +31,39 @@ class Node:
         "Unambiguous string representing this object, intended for developers"
         return str(self)
 
-class BST(Node):
-    "Binary search tree supporting search by key and node insertion"
-    def search(self,k):
-        "Find and return a node with key `k`, or None if no such node exists"
-        if k == self.key:
-            # This node is the right one, return it
-            return self
-        # k is not the key of self, so if k is present it's in the left or right subtree
 
+class BST(Node):
+    "Binary search tree supporting search and insert"
+
+    def search(self, k):
+        """
+        Find and return a node of this BST with key `k`, or return None
+        if no such node exists
+        """
+        # Maybe the root has key k
+        if k == self.key:
+            return self
+        # Otherwise, it's someone else's problem.  Whose?
         if k < self.key:
-            if self.left != None:
-                # the left subtree exists, so search it
-                return self.left.search(k)
-            else:
+            # have the left subtree look for it...
+            #   self.left might be another BST
+            #   or it might be None, if there's no left child
+            if self.left == None:
                 # k would need to be in the left subtree
-                # but there's no left subtree!
-                return None # not found
-        else:
-            if self.right != None:
-                return self.right.search(k)
-            else:
+                # which does not exist.  Therefore k is not present
                 return None
-            
-    def insert(self,k):
+            else:
+                return self.left.search(k)
+        else:
+            # have the right subtree look for it
+            if self.right == None:
+                return None
+            else:
+                return self.right.search(k)
+
+    def insert(self, k):
         """
-        Create a node with key `k` and add it to the tree, preserving the BST property
-        Requires that key `k` is not present in the tree already!
+        Find and return a node of this BST with key `k`, or return None
+        if no such node exists
         """
-        
+        raise NotImplementedError
