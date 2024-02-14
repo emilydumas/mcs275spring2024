@@ -30,3 +30,40 @@ class Node:
     def __repr__(self):
         "Unambiguous string representing this object, intended for developers"
         return str(self)
+
+class BST(Node):
+    "Binary search tree supporting search and insert"
+    def search(self,k):
+        """
+        Find and return a node of this BST with key `k`, or return None
+        if no such node exists
+        """
+        # Maybe the root has key k
+        if k == self.key:
+            return self
+        # Otherwise, it's someone else's problem.  Whose?
+        if k < self.key:
+            # have the left subtree look for it
+            #self.left might be another BST
+            #but it might be None, if there's no left child
+            if self.left == None:
+                # k would need to be in the left subtree
+                # which does not exist.  Therefore k is not present
+                return None
+            else:
+                return self.left.search(k)
+        else:
+            # have the right subtree look for it
+            if self.right == None:
+                return None
+            else:
+                return self.right.search(k)
+            
+
+
+    def insert(self,k):
+        """
+        Find and return a node of this BST with key `k`, or return None
+        if no such node exists
+        """
+        raise NotImplementedError
