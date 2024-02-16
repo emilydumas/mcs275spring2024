@@ -1,4 +1,4 @@
-# MCS 275 Spring 2024 Lectures 15-16
+# MCS 275 Spring 2024 Lectures 15-17
 # David Dumas
 "Classes representing tree-like data structures"
 
@@ -33,7 +33,11 @@ class Node:
 
 
 class BST(Node):
-    "Binary search tree supporting search and insert"
+    """
+    Binary search tree supporting search and insert, keys can be of any
+    type supporting comparison.  Single node with key `None` represents
+    an empty tree.
+    """
 
     def search(self, k, verbose=False):
         """
@@ -58,6 +62,8 @@ class BST(Node):
             if self.left == None:
                 # k would need to be in the left subtree
                 # which does not exist.  Therefore k is not present
+                if verbose:
+                    print("Left subtree empty; {} not present".format(k))
                 return None
             else:
                 return self.left.search(k, verbose=verbose)
@@ -66,6 +72,8 @@ class BST(Node):
                 print("{} > {}, so descend into right subtree".format(k, self.key))
             # have the right subtree look for it
             if self.right == None:
+                if verbose:
+                    print("Right subtree empty; {} not present".format(k))
                 return None
             else:
                 return self.right.search(k, verbose=verbose)
@@ -90,14 +98,21 @@ class BST(Node):
         if k < self.key:
             # Any node with key `k` would need to go
             # in the left subtree.
+            if verbose:
+                print(
+                    "{0} < {1}, therefore {0} must go in the left subtree".format(
+                        k, self.key
+                    )
+                )
+
             if self.left == None:
+                # There's no left subtree, so `k` can be the first key there.
                 if verbose:
                     print(
-                        "{0} < {1} and there is no left child; adding a left child with key {0}".format(
-                            k, self.key
+                        "Left subtree empty.  Adding a node with key {} as left child.".format(
+                            k
                         )
                     )
-                # There's no left subtree, so `k` can be the first key there.
                 node = BST(key=k)  # new node
                 self.set_left(node)  # make the new node our left child
             else:
@@ -110,11 +125,17 @@ class BST(Node):
 
                 return self.left.insert(k, verbose=verbose)
         else:
+            if verbose:
+                print(
+                    "{0} > {1}, therefore {0} must go in the right subtree".format(
+                        k, self.key
+                    )
+                )
             if self.right == None:
                 if verbose:
                     print(
-                        "{0} > {1} and there is no right child; adding a right child with key {0}".format(
-                            k, self.key
+                        "Right subtree empty.  Adding a node with key {} as right child.".format(
+                            k
                         )
                     )
                 # There's no right subtree, so `k` can be the first key there.
