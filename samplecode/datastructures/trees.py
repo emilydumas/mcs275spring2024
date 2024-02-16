@@ -35,16 +35,23 @@ class Node:
 class BST(Node):
     "Binary search tree supporting search and insert"
 
-    def search(self, k):
+    def search(self, k, verbose=False):
         """
         Find and return a node of this BST with key `k`, or return None
         if no such node exists
         """
+        if verbose:
+            print("search({}) called with root node {}".format(k, self))
+        if self.key == None:
+            # the tree is empty, so in particular `k` is not there
+            return None
         # Maybe the root has key k
         if k == self.key:
             return self
         # Otherwise, it's someone else's problem.  Whose?
         if k < self.key:
+            if verbose:
+                print("{} < {}, so descend into left subtree".format(k, self.key))
             # have the left subtree look for it...
             #   self.left might be another BST
             #   or it might be None, if there's no left child
@@ -53,17 +60,71 @@ class BST(Node):
                 # which does not exist.  Therefore k is not present
                 return None
             else:
-                return self.left.search(k)
+                return self.left.search(k, verbose=verbose)
         else:
+            if verbose:
+                print("{} > {}, so descend into right subtree".format(k, self.key))
             # have the right subtree look for it
             if self.right == None:
                 return None
             else:
-                return self.right.search(k)
+                return self.right.search(k, verbose=verbose)
 
-    def insert(self, k):
+    def insert(self, k, verbose=False):
         """
-        Find and return a node of this BST with key `k`, or return None
-        if no such node exists
+        Given a key `k` that is not present in the BST, find a suitable
+        place and add a new node to the BST with key `k`
         """
-        raise NotImplementedError
+        if verbose:
+            print("insert({}) called with root node {}".format(k, self))
+        if self.key == None:
+            # the tree is empty, so k can become the key of this node
+            if verbose:
+                print("Tree is empty, setting root key to {}".format(k))
+            self.key = k
+            return
+
+        if k == self.key:
+            raise ValueError("Duplicate keys are not allowed in BST")
+
+        if k < self.key:
+            # Any node with key `k` would need to go
+            # in the left subtree.
+            if self.left == None:
+                if verbose:
+                    print(
+                        "{0} < {1} and there is no left child; adding a left child with key {0}".format(
+                            k, self.key
+                        )
+                    )
+                # There's no left subtree, so `k` can be the first key there.
+                node = BST(key=k)  # new node
+                self.set_left(node)  # make the new node our left child
+            else:
+                if verbose:
+                    print(
+                        "{0} < {1} and there is a left child; descend into left subtree".format(
+                            k, self.key
+                        )
+                    )
+
+                return self.left.insert(k, verbose=verbose)
+        else:
+            if self.right == None:
+                if verbose:
+                    print(
+                        "{0} > {1} and there is no right child; adding a right child with key {0}".format(
+                            k, self.key
+                        )
+                    )
+                # There's no right subtree, so `k` can be the first key there.
+                node = BST(key=k)  # new node
+                self.set_right(node)  # make the new node our right child
+            else:
+                if verbose:
+                    print(
+                        "{0} > {1} and there is a right child; descend into right subtree".format(
+                            k, self.key
+                        )
+                    )
+                return self.right.insert(k, verbose=verbose)
