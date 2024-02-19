@@ -31,6 +31,17 @@ class Node:
         "Unambiguous string representing this object, intended for developers"
         return str(self)
 
+    def inorder(self):
+        "Return a list of all nodes visited by an inorder traversal"
+        # inorder = left, node, right
+        left = []
+        right = []
+        if self.left:
+            left = self.left.inorder()
+        if self.right:
+            right = self.right.inorder()
+        return left + [self] + right
+
 
 class BST(Node):
     """
