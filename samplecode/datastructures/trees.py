@@ -42,6 +42,26 @@ class Node:
             right = self.right.inorder()
         return left + [self] + right
 
+    def preorder(self):
+        "Return a list of all nodes visited by an preorder traversal"
+        left = []
+        right = []
+        if self.left:
+            left = self.left.preorder()
+        if self.right:
+            right = self.right.preorder()
+        return [self] + left + right
+
+    def postorder(self):
+        "Return a list of all nodes visited by a postorder traversal"
+        left = []
+        right = []
+        if self.left:
+            left = self.left.postorder()
+        if self.right:
+            right = self.right.postorder()
+        return left + right + [self]
+
 
 class BST(Node):
     """
