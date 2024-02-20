@@ -5,7 +5,10 @@ Class library for working with labyrinths---maze-like structures
 with walls, open spaces, and various kinds of obstacles.
 """
 
-__version__ = "1.0"
+__version__ = "1.1"
+# Changelog
+# v1.0: Initial release
+# v1.1: Added additional sample labyrinths
 
 import random
 import json
@@ -518,25 +521,57 @@ class RandomLabyrinth(Labyrinth):
 class SampleLabyrinth(Labyrinth):
     "Labyrinth examples with additional info"
     _sampledata = []
+    _sampledata2 = {}
 
     def __init__(self, *args, **kwargs):
-        self.info = kwargs.pop("info")
+        try:
+            self.info = kwargs.pop("info")
+        except KeyError:
+            self.info = "(no info available)"
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def load_by_id(cls, n):
-        "Get sample labyrinth with index `n` in the sample list"
-        if not isinstance(n, int):
-            raise TypeError("sample id `n` must be an integer")
-        if not cls._sampledata:
+    def builtin_labyrinth_names(cls):
+        if not cls._sampledata2:
             cls._load_sampledata()
-        if n < 0 or n >= len(cls._sampledata):
-            raise ValueError(
-                "bad sample id `n`; allowed range is 0<=n<{}".format(
-                    len(cls._sampledata)
+        return list(cls._sampledata2)
+
+    @classmethod
+    def load_by_id(cls, n):
+        """
+        Get sample labyrinth with index `n` (integer) in the first
+        sample labyrinth list or which has name `n` (a string) in
+        the second sample labyrinth list
+        """
+        if isinstance(n, str):
+            try:
+                idx = int(n)
+                batch = 1
+            except ValueError:
+                idx = n
+                batch = 2
+        elif isinstance(n, int):
+            idx = int(n)
+            batch = 1
+        else:
+            raise TypeError("sample id must be an integer or string")
+
+        if batch == 1:
+            if not cls._sampledata:
+                cls._load_sampledata()
+            if idx < 0 or idx >= len(cls._sampledata):
+                raise ValueError(
+                    "Bad numeric sample id {} ; allowed range is 0<=n<{}".format(
+                        len(cls._sampledata)
+                    )
                 )
-            )
-        data = cls._sampledata[n]
+            data = cls._sampledata[idx]
+        else:
+            if not cls._sampledata2:
+                cls._load_sampledata()
+            if idx not in cls._sampledata2:
+                raise ValueError("Unknown sample labyrinth name '{}'".format(idx))
+            data = cls._sampledata2[idx]
         return cls._from_serobj(data)
 
     @classmethod
@@ -548,6 +583,11 @@ class SampleLabyrinth(Labyrinth):
             cls._sampledata = json.loads(
                 gzip.decompress(
                     base64.b85decode(_sample_labyrinths_datablock.replace("\n", ""))
+                )
+            )
+            cls._sampledata2 = json.loads(
+                gzip.decompress(
+                    base64.b85decode(_sample_labyrinths_datablock2.replace("\n", ""))
                 )
             )
         except Exception as e:
@@ -562,7 +602,8 @@ def sample_labyrinth(n):
     return SampleLabyrinth.load_by_id(n)
 
 
-# This is a bunch of compressed data about the sample labyrinths.
+# This is a bunch of compressed data about the first batch
+# of sample labyrinths (released with the project).
 # It is decompressed as needed by `sample_labyrinth`.
 _sample_labyrinths_datablock = r"""
 ABzY8sjJFm0{_ih+iu%P68)8ipPWDwbXAjV(r>eu!7ebH0F&9Lcn~laV{0Rm8c9y<8RXxG
@@ -628,4 +669,42 @@ B2@S_Nc>u)zDSG6-_I+8@kD@|G1$RCCWi5BNp`)R80;iqCxP`zz)k|=Nnl<{=mSrW{lL@5
 )J-f@i=yoE3X|?Uc7Krfy8LPLb#6A|1kzdUCtbDYZ1ee!??ey36VrVr`Iyfv{P^oP{^#5L
 #ZCkEYje=N`qB*HbFqBtl5FzX{_unP-@|HsU9KB%Rh30s_NAuPmr`9;W#il0HGR=8#O-`G
 E!6t1sF$hshV_az?JxP$tI?nQ&N8sy{sPY-$q_nF000
+"""
+
+
+# This is a bunch of compressed data about the second batch
+# of sample labyrinths (used by the autograder, released later).
+# It is decompressed as needed by `sample_labyrinth`.
+_sample_labyrinths_datablock2 = r"""
+ABzY8O%T*&0{_KY+iu%95dD=P&wb#KlxXg+1cl+m-o$_$rMBDMY|(#T$+kF$)KHh&-USMD
+tcWwD=FFWxAFIs|S|0bC&GN9_eN>yrKOTNQ{(ac~(^5oV9v(mO$KklzADbUf#g~WTYxCf>
+URCXHQkMts_51R#RaG6@r%%nA=AUW)@T8eEOj;%jCQBwAlM5z2lg<B{pK5+;Sg>Kih6NiI
+Y*?^i!G`%7=4+Xm<##Q=P%z(u`4;?c!F&r|Rx;m`-!1vwlHYawuHyqa7VKECV`h$-IcB!t
+rwe}S`SW>}=2@C&X`ZEdmgZS+o<*F<ufH0ooUm8b^@oT(gV-~OJ-VnqfNvCg=6aMVph-lZ
+VbTE*X$B}qk+_gSNf9^8+$4aK2v*Ic5h0wxtpb`N9wqabjAt!Edlb(L8QKbHir7hzry1}s
+rUL!44G%(qUHhkiN`>%Jyc0qXiik!Zitt8!Bft^i2=NHx5y&aF)%s)eF4?LBQ+0z;qEY(I
+f&>_r7Ol`SSzH|%z-qJ@1FUFxqZVfS#+Eq8-F6*&M*Q49a*VB^MBlspTz8JjQ=BA7ArM0#
+hl)t1;7KvM%liDy@Sbt1N_MaWs3DL@GFW6M>;WO>I<(|nGjJo|LBNCxF$Kx^X?TOc!Ba8A
+m)pC!bpn9|5~-8Z*_B?t)cgH*UGJB){Ma5N>so+u#aYM2lsemT*O-=88QT)}xLdt{-hG?r
+4H=;O8$HuyM+;j$RI94qQFf<xWT$%G2gQvJIIDA@IKMnGQiP-Gj8e`g)ptE9>SWX{pI@FB
+6N6SY^GHs5iuHefuc{V$hiT#7BzgJ8DTwC`>X-$-zAD374QrDlhP4LP8dw`gjj+_fQVUBh
+EVUrk!deS!3s_sg+5*-Vu(n9->!gd-k9xcAD+58dKxMT1NkC_BtBl_OUdF^wK}Ob3*h(DM
+1D8ZsW?WS!)l@kUh$reSF7+W^YO%hzVwF^0$PNJJoCns=jc#A6&GO}~-oC^cxCazyN?;KA
+p6;}h+^ii-{%oZ7Bo7<cSej0kk?w?~NA9D{`Oc-7<@8%BD#=BlIy7feCADM;k6l_z2K)?H
+kX`AgG6kaUxQhj%nOO+7Yr#|r43r=NCrGskv__zB0wojV*aRstLDh7kgGaIO-3UD=K@Loi
+`4XVuM27{SeFF6p*ckx;2oOL30dlxMhhH8LK>&$B7eG6p+xMZXK-dR>wi*FK2pVeya3LT2
+hjXyrR@G)5+{7X4ApB66SWFBP29p!a!!WajFv0o-ZKY}1<XDbj!@=5qj5oO$0zuyNf{26X
+{orrLBZ`5D5?ESbndAf}6JHF(7X$Gn@GQVuO5j-n&k{ai34BW6Q^MXH@NvM$fvV9y9Pmti
+r%J=v%PO18WI<|@KGI^Ks2R>>rUMf@5o)w?ltWg&>oD3QkedMr1vgf_Usa9kC<L+=PtzjS
+V)OZ@4vk!*Mm1KOUe}URlN$7XC<B!n^ic|<<Y7_Ib@aPG;0jEpJQz0r1<*d@3QW(;HJEwd
+v<uLE-<*To@Z7`mbB?4j15(gsSI}C=bV%_)DHy4T^Lp5Whx7WVOfp=YUn1dieSBN)H{ZT*
+_nY;9SE*-$VYX(P82}BoCiwW4kKY9URr3+5?d#id`M%k#2Tp&#78jVR6}Q>A|7G3nbFzB$
+Wc4U<hjvcSNUmp5Gh+9|o_*v+1I-y*B;LM-GE)WdspiZg3H()Wwvo$XOr}c4&-A=~ZQ{qS
+J{(V9Ec!&6@&n*gaT5(XnvbY%-BO!48AiAfijhVgDxGyu<Pks`fjIJ!mZgaZIukOPQHjG?
+Hyrp>9uED{i5eJ4XXho@Y>S2`7+482CK%L^9~*h+Ml6_Nc`@5Ea<<j$Jz(G+9EOw5Ok!~Q
+f_)=Q?E05PRQ{F-VYnxE%Ncur0&|f<{jrPc6r9dr!oD2n)WK05<OxtjbNYZ&`sfcrl5w}|
+D+5z~0)Ye)2}BaeBnJr&dH8{M0$lcf05*vzx<=r!mn7UHU|*PCBv9BuQfb#nyfUETI|JR$
+2o0S7bYXW1N_ZcEd|=37;#4>0^O=E)qgBlRe@#tIx~DcYy|!wi<CXgmZphCmd72Cr22Pe$
+{<fO!cN*mCBI9K;wFS0cyIf-dZg9%=wO;$x#)g*l0HNT?-C(oJeO>PwSg!Wf=V@SeheQuj
+S*yke%9-i{M`Z?bSgS@`9TO&HSn=9Sv&>?%EHf#~mcpD)+H_F%>tFmAkTS_C000
 """

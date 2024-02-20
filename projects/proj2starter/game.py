@@ -3,20 +3,21 @@
 
 # NOTE: This _experimental_ labyrinth game/simulation is
 # experimental and is not held to the same standard of
-# quality as the normative project 2 materials.  It may 
+# quality as the normative project 2 materials.  It may
 # also be updated to make improvements or fix bugs.
 
 from plane import Point2, Vector2
 import random
 from tkinter import *
 from tkinter import font
-from tkinter import scrolledtext 
+from tkinter import scrolledtext
 from PIL import ImageTk, Image
 from labyrinth import *
 from functools import partial
 import argparse
 
 __version__ = "1.1"
+
 
 class Pref:
     pressed_bg = "#bcbcf5"
@@ -39,38 +40,41 @@ class HelpWindow(Toplevel):
     RESET button restarts the labyrinth in play mode.
 
     CLICK cell type buttons at bottom and/or inside labyrinth to make changes when in edit mode.
-     
+
     Keyboard shortcuts:
      * up/down/left/right - move (in play mode)
      * Q/q - exit
      * Escape - toggle edit mode on/off
      * F1/H/h - open this help screen
     """
-    def __init__(self,parent,close_cb=None):
+
+    def __init__(self, parent, close_cb=None):
         super().__init__(parent)
-        self.content = ("\n".join([(x[4:] if len(x)>=4 else "") for x in self.__doc__.splitlines() ])).format(__version__)
+        self.content = (
+            "\n".join(
+                [(x[4:] if len(x) >= 4 else "") for x in self.__doc__.splitlines()]
+            )
+        ).format(__version__)
         self.close_cb = close_cb
         self.title("EotM Help")
-        text_area = scrolledtext.ScrolledText(self,  
-            wrap = WORD,  
-            width = 60,  
-            height = 25,
-            font = ("sans-serif",12)
+        text_area = scrolledtext.ScrolledText(
+            self, wrap=WORD, width=60, height=25, font=("sans-serif", 12)
         )
-        text_area.insert(INSERT,self.content)
+        text_area.insert(INSERT, self.content)
         text_area.configure(state=DISABLED)
         text_area.pack()
-        btn = Button(self,text="Close",height=2,width=7,command=self.on_close)
-        btn.pack(padx=20,pady=20)
+        btn = Button(self, text="Close", height=2, width=7, command=self.on_close)
+        btn.pack(padx=20, pady=20)
 
     def destroy(self):
         if self.close_cb:
             self.close_cb()
         super().destroy()
 
-    def on_close(self,*args):
+    def on_close(self, *args):
         self.destroy()
         self.update()
+
 
 class DoubleBufferCanvas(Canvas):
     def __init__(self, parent, img):
@@ -416,7 +420,7 @@ class LabyrinthInteractorApp(Tk):
 
     def help_click(self):
         if self.helpwindow is None:
-            self.helpwindow = HelpWindow(self,self.on_help_close)
+            self.helpwindow = HelpWindow(self, self.on_help_close)
 
     def on_help_close(self):
         self.helpwindow = None
@@ -474,10 +478,14 @@ parser.add_argument(
     "-l",
     "--labyrinth",
     default="blank20x20",
-    help="Labyrinth to start with; options are sample0,sample1,...,sample8 or blankNxM where N and M are integers (e.g. blank25x14).",
+    help="Labyrinth to start with; options are sample0,sample1,...,sample8 or blankNxM where N and M are integers (e.g. blank25x14) or a named labyrinth used by the autograder.",
 )
 parser.add_argument(
-    "-s", "--scale", default=30, type=int, help="Pixels per grid square, increase to make labyrinth view larger.  Minimum 5."
+    "-s",
+    "--scale",
+    default=30,
+    type=int,
+    help="Pixels per grid square, increase to make labyrinth view larger.  Minimum 5.",
 )
 args = parser.parse_args()
 
@@ -496,7 +504,7 @@ elif args.labyrinth.startswith("sample"):
     n = int(args.labyrinth.removeprefix("sample"))
     lab = sample_labyrinth(n)
 else:
-    raise ValueError("Unknown labyrinth specification")
+    lab = sample_labyrinth(args.labyrinth)
 
 assert args.scale >= 5
 app = LabyrinthInteractorApp(lab, scale=args.scale)
