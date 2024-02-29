@@ -1,6 +1,8 @@
-# MCS 275 Spring 2024 Lectures 15-17
+# MCS 275 Spring 2024 Lectures 15-17 and Worksheets 7-8
 # David Dumas
 "Classes representing tree-like data structures"
+
+import json
 
 
 class Node:
@@ -61,6 +63,37 @@ class Node:
         if self.right:
             right = self.right.postorder()
         return left + right + [self]
+
+    # Part of solution to Worksheet 8 problem 1
+    # (adapted from older course materials prepared by
+    #  TAs Johnny Joyce and Kylash Viswanathan)
+    def as_dict_tree(self):
+        """
+        Returns representation of the nodes in the tree
+        as a collection of nested dictionaries.
+        """
+
+        # Initialize left and right keys as None so they can be overwritten if needed
+        D = {"key": self.key, "left": None, "right": None}
+
+        if self.left != None:
+            D["left"] = self.left.as_dict_tree()
+
+        if self.right != None:
+            D["right"] = self.right.as_dict_tree()
+
+        return D
+
+    # Part of solution to Worksheet 8 problem 1
+    # (adapted from older course materials prepared by
+    #  TAs Johnny Joyce and Kylash Viswanathan)
+    def save(self, fp):
+        """
+        Make a JSON representation of the tree and write it to
+        the already-open file object `fp`.
+        """
+        tree = self.as_dict_tree()
+        json.dump({"class": self.__class__.__name__, "tree": tree}, fp)
 
 
 class BST(Node):
@@ -180,3 +213,57 @@ class BST(Node):
                         )
                     )
                 return self.right.insert(k, verbose=verbose)
+
+    # From Worksheet 7 Solutions
+    def minimum(self):
+        """
+        In the subtree that this node is the root of, find and
+        return the the smallest key.
+        """
+        if self.left != None:
+            return self.left.minimum()
+        else:
+            return self.key
+
+    # From Worksheet 7 Solutions
+    def maximum(self):
+        """
+        In the subtree that this node is the root of, find and
+        return the the largest key.
+        """
+        if self.right != None:
+            return self.right.maximum()
+        else:
+            return self.key
+
+
+# Part of solution to Worksheet 8 problem 1
+# (adapted from older course materials prepared by
+#  TAs Johnny Joyce and Kylash Viswanathan)
+def dict_tree_to_nodes(D, node_type):
+    """
+    Converts a nested dict to binary tree using `node_type`
+    as the node class (should be `Node` or `BST`).
+    """
+    N = node_type(D["key"])
+
+    if D["left"] != None:  # Recursive call on left side if needed
+        N.set_left(dict_tree_to_nodes(D["left"], node_type))
+
+    if D["right"] != None:  # Recursive call on right side if needed
+        N.set_right(dict_tree_to_nodes(D["right"], node_type))
+
+    return N
+
+
+# Part of solution to Worksheet 8 problem 1
+# (adapted from older course materials prepared by
+#  TAs Johnny Joyce and Kylash Viswanathan)
+def load(fp):
+    """
+    Loads a tree from a JSON object read from `fp`
+    (which should be a file object open for reading)
+    """
+    T = json.load(fp)
+    node_type = {"Node": Node, "BST": BST}[T["class"]]
+    return dict_tree_to_nodes(T["tree"], node_type)
