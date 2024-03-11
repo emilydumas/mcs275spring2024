@@ -29,6 +29,8 @@ con.execute(
 )
 # In case the table already exists, delete all its rows.
 con.execute("DELETE FROM planets;")
+con.execute("DELETE FROM moons;")
+
 # List of tuples to add
 planetdata = [
     (1, "Mercury", 0.4, None),
@@ -62,7 +64,14 @@ moondata = [
     (14, 6, "Hyperion", 1500880, 1848),
     (15, 6, "Iapetus", 3560840, 1671),
     (16, 6, "Phoebe", 12947780, 1898),
+    (17, 7, "Ariel", 190900, 1851),
+    (18, 7, "Umbriel", 266000, 1851),
+    (19, 7, "Titania", 436300, 1787),
+    (20, 7, "Oberon", 583500, 1787),
+    (21, 7, "Miranda", 129900, 1949),
+    (22, 8, "Triton", 354800, 1846),
 ]
+
 
 # Loop to add each tuple as a row of the table
 for row in moondata:
