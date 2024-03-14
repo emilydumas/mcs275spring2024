@@ -40,7 +40,9 @@ def do_list(flag):
                     """
         )
     else:
-        raise ValueError("Unknown flag '{}'".format(flag))
+        print("Unknown flag '{}'".format(flag))
+        exit(1)
+        
     for taskid, desc, complete in res:
         if complete:
             donechar = "\u2713"
@@ -74,6 +76,7 @@ def do_delete(taskid_str):
     )
     if res.rowcount == 0:
         print("WARNING: No such task")
+        exit(1)
     con.commit()
     con.close()
 
@@ -96,4 +99,5 @@ if __name__ == "__main__":
     elif command == "delete":
         do_delete(operand)
     else:
-        raise ValueError("I don't know how to do that.")
+        print("Unknown command")
+        exit(1)
