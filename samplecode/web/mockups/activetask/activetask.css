@@ -1,0 +1,15 @@
+body {
+    font-family: "Verdana", sans-serif;
+    background: #C0C0C0;
+}
+div.this-user-task-list-container {
+    border: 2px solid black;
+}
+p.task-description {
+    font-weight: bold;
+    color: #000000;
+}
+p.task-metadata {
+    font-size: 80%;
+    color: #505050;
+}

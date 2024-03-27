@@ -1,0 +1,16 @@
+body {
+    font-family: "Verdana", sans-serif;
+    background: #C0C0C0;
+}
+
+div.logo-header {
+    background: #A0A0A0;
+    border: 3px solid #C0DE00;
+}
+p.task-description {
+    font-weight: bold;
+}
+p.task-metadata {
+    color: #505050;
+    font-size: 80%;
+}
