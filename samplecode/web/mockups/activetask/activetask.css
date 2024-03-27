@@ -1,15 +1,189 @@
 body {
-    font-family: "Verdana", sans-serif;
-    background: #C0C0C0;
+    font-family: sans-serif;
+    /* Main text font */
+    max-width: 50rem;
+    /* Limit width of the body */
+    padding: 1em;
+    margin: auto;
+    /* Center the body */
+    background: #26242d;
+    /* Main BG color */
+    color: #c5ecf0;
+    /* Main text color */
 }
-div.this-user-task-list-container {
-    border: 2px solid black;
+
+body>div {
+    /* Leave some margin and padding around top-level DIVs (those with parent BODY) */
+    padding: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
-p.task-description {
+
+div.logo-header {
+    /* Special styling for the div containing the title (mostly invisible) */
+    text-align: center;
+    overflow: auto;
+    background: none;
+}
+
+div.logo-header h1 {
+    font-family: sans-serif;
+    font-style: italic;
+    font-weight: normal;
+    /* Not bold */
+    font-size: 36pt;
+    display: inline-block;
+    /* Make into a box that sits inside the div */
+    width: auto;
+    /* Reduce size of the box to just fit the text */
+    margin: auto;
+    /* Centers the box inside the parent div */
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0.15em;
+    padding-right: 0.3em;
+}
+
+div.logo-header h1 span:first-of-type {
+    color: #e840b3;
+}
+div.logo-header h1 span {
+    color: #c5ecf0;
+}
+
+div.logo-header p {
+    color: #738a8c;
+    padding: 0;
+    margin: 0;
+}
+
+div.task-list-container {
+    margin-bottom: 1em;
+    /* Ensure space between panels */
+}
+
+div.task-list-container h2 {
+    /* Panel titles */
+    font-weight: normal;
+    /* not bold */
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+
+.task {
+    border: 1px solid #808080;
+    /* thin gray border */
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    background: rgba(100, 100, 100, 0.2);
+    /* 20% opaque white background to individual item divs */
+}
+
+/* Styling of any paragraph inside a task div */
+.task p {
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+}
+
+/* Styling of the description, a p inside the div */
+.task-description {
     font-weight: bold;
-    color: #000000;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
-p.task-metadata {
+
+/* Additional styling of the <p> that contains metadata about
+   a task: Small text and different color. */
+.task-metadata {
+    font-size: 75%;
+    color: #A0A0A0;
+}
+
+
+/* Container for action buttons */
+ul.task-actions {
+    padding: 0em;
+    margin: 0;
+    margin-top: 0.5em;
     font-size: 80%;
-    color: #505050;
+    display: inline-block;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    font-size: 75%;
+}
+
+/* li rendered as a button.  We make them go side-by-side (float...) with a dark background */
+li.btn {
+    font-family: sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    float: left;
+    list-style: none;
+    text-align: center;
+    padding: 0.5em;
+    margin-right: 0.2em;
+    background: #666666;
+    color: #404040;
+    border-radius: 7px;
+    /* rounded corners */
+}
+
+li.spacer {
+   padding-left: 1em;
+   background: inherit;
+   color: inherit;
+}
+
+/* Buttons are usually links, so we disable the blue underline in most browser defaults for A tags */
+li.btn a {
+    text-decoration: none;
+    /* no underline */
+    color: inherit;
+    /* inherit = ignore default setting of a and default to containing tag style */
+}
+
+/* Background colors of specific buttons */
+
+li.set-wait {
+    background: #dfba52;
+
+}
+
+li.set-progress {
+    background: #6adf52;
+    color: #202020;
+}
+
+li.set-complete {
+    background: #594ce3;
+    color: #202020;
+}
+
+li.public {
+    background: #d32e2e;
+    color: #202020;
+}
+
+li.private {
+    background: #e8d2d2;
+    color: #202020;
+}
+
+a {
+    color: #aeafa4;
+}
+
+a.nodecorate {
+    text-decoration: none;
+}
+
+li.btn-disabled {
+    background: #666666;
+    color: #404040;
 }

@@ -6,39 +6,78 @@
     </head>
     <body>
         <div class="logo-header">
-        <h1>TaskGain</h1>
-        <p>Gain insight into your tasks</p>
+        <h1><span>Task</span><span>Gain</span></h1>
+        <p>Manage tasks, gain insight</p>
         </div>
 
         
-        <div class="this-user-task-list-container">
+        <div class="task-list-container">
             <h2>Task list for ddumas</h2>
-
-            <div class="this-user-task-list">
-                <div class="this-user-task">
+            <h3>Waiting</h3>
+            <div class="task-list">
+                <div class="task">
                     <p class="task-description">Do laundry</p>
-                    <p class="task-metadata">Waiting (private)</p>
-                    <ul>
-                        <li>Set to waiting</li>
-                        <li>Set to in progress</li>
-                        <li>Set to completed</li>
-                        <li>Make public</li>
+                    <p class="task-metadata">Private, last updated Mon Mar 25</p>
+                    <ul class="task-actions">
+                        <li class="btn set-wait btn-disabled">Wait</li>
+                        <li class="btn set-progress">Start</li>
+                        <li class="btn set-complete">Done</li>
+                        <li class="btn spacer"></li>
+                        <li class="btn public">Share</li>
                     </ul>
                 </div>
-                <div class="this-user-task">
+                <div class="task">
                     <p class="task-description">Write homework 11</p>
-                    <p class="task-metadata">In progress (public)</p>
+                    <p class="task-metadata">Public, last updated Sun Mar 24</p>
+                    <ul class="task-actions">
+                        <li class="btn set-wait btn-disabled">Wait</li>
+                        <li class="btn set-progress">Start</li>
+                        <li class="btn set-complete">Done</li>
+                        <li class="btn spacer"></li>
+                        <li class="btn private">Unshare</li>
+                    </ul>
                 </div>
             </div>
+            <h3>In progress</h3>
+            <div class="task-list">
+                <div class="task">
+                    <p class="task-description">Grade project 3</p>
+                    <p class="task-metadata">Public, last updated Wed Mar 27</p>
+                    <ul class="task-actions">
+                        <li class="btn set-wait">Wait</li>
+                        <li class="btn set-progress btn-disabled">Start</li>
+                        <li class="btn set-complete">Done</li>
+                        <li class="btn spacer"></li>
+                        <li class="btn private">Unshare</li>
+                    </ul>
+                </div>
+            </div>
+            <h3>Completed</h3>
+            <div class="task-list">                
+                <div class="task-placeholder">
+                    <a href="https://example.com/">Show 3 tasks.</a>
+                </div>        
+            </div>
+
         </div>
 
         <!-- Public stuff of other users -->
-        <div>
+        <div class="task-list-container">
             <h2>Public tasks of other users</h2>
             <h3>User vjones</h3>
-            <!-- task task task-->
+            <div class="task-list">
+                <div class="task">
+                    <p class="task-description">Publish research paper on knot theory</p>
+                    <p class="task-metadata">In progress, last updated Fri Jan 12</p>
+                </div>
+            </div>
             <h3>User amartinez</h3>
-            <!-- task task task-->
+            <div class="task-list">
+                <div class="task">
+                    <p class="task-description">Improve water quality in Chicago river</p>
+                    <p class="task-metadata">Waiting, last updated Wed Feb 23, 1994</p>
+                </div>
+            </div>
         </div>
 
     </body>
