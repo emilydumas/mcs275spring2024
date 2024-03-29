@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Task list for {{ username }}</title>
+        <link rel="stylesheet" href="/static/taskgain.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Task</span><span>Gain</span></h1>
+        <p>Manage tasks, gain insight</p>
+        </div>
+
+        
+        <div class="task-list-container">
+            <h2>Task list for {{ username }}</h2>
+            <h3>All tasks</h3>
+            <div class="task-list">
+                {% for task in this_user_tasks %}
+                <div class="task">
+                    <p class="task-description">{{ task["description"] }}</p>
+                    <p class="task-metadata">{{ STATUS_DESC[task["status"]] }}, {{ SHARED_DESC[task["shared"]] }}, last updated {{ task["updated_ts"] }}</p>
+                    <ul class="task-actions">
+                        <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
+                        <li class="btn set-progress">Start</li>
+                        <li class="btn set-complete">Done</li>
+                        <li class="btn spacer"></li>
+                        <li class="btn public">Share</li>
+                    </ul>
+                </div>
+                {% endfor %}               
+            </div>
+        </div>
+
+        <!-- Public stuff of other users -->
+        <div class="task-list-container">
+            <h2>Public tasks of other users</h2>
+            <h3>User vjones</h3>
+            <div class="task-list">
+                <div class="task">
+                    <p class="task-description">Publish research paper on knot theory</p>
+                    <p class="task-metadata">In progress, last updated Fri Jan 12</p>
+                </div>
+            </div>
+            <h3>User amartinez</h3>
+            <div class="task-list">
+                <div class="task">
+                    <p class="task-description">Improve water quality in Chicago river</p>
+                    <p class="task-metadata">Waiting, last updated Wed Feb 23, 1994</p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
