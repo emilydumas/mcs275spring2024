@@ -9,16 +9,15 @@
         <h1><span>Active</span><span>Task</span></h1>
         <p>Share insights &amp; activate your team</p>
         </div>
-
         
         <div class="task-list-container">
             <h2>Task list for {{ username }}</h2>
-            <h3>All tasks</h3>
+            <h3>Waiting</h3>
             <div class="task-list">
-                {% for task in this_user_rows %}    
+                {% for task in this_user_tasks[ST_WAIT] %}
                 <div class="task">
                     <p class="task-description">{{ task["description"] }}</p>
-                    <p class="task-metadata">{{ STATUS_VALS[task["status"]] }}, {{ SHARED_VALS[task["shared"]] }}, last updated {{ task["updated_ts"] }}</p>
+                    <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
                     <ul class="task-actions">
                         <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
                         <li class="btn set-progress">Start</li>
@@ -29,26 +28,54 @@
                 </div>
                 {% endfor %}
             </div>
+            <h3>In progress</h3>
+            <div class="task-list">
+                {% for task in this_user_tasks[ST_PROGRESS] %}
+                <div class="task">
+                    <p class="task-description">{{ task["description"] }}</p>
+                    <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}})..</p>
+                    <ul class="task-actions">
+                        <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
+                        <li class="btn set-progress">Start</li>
+                        <li class="btn set-complete">Done</li>
+                        <li class="btn spacer"></li>
+                        <li class="btn public">Share</li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+            <h3>Completed</h3>
+            <div class="task-list">
+                {% for task in this_user_tasks[ST_COMPLETE] %}
+                <div class="task">
+                    <p class="task-description">{{ task["description"] }}</p>
+                    <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_str"] }}.</p>
+                    <ul class="task-actions">
+                        <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
+                        <li class="btn set-progress">Start</li>
+                        <li class="btn set-complete">Done</li>
+                        <li class="btn spacer"></li>
+                        <li class="btn public">Share</li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>                        
         </div>
 
         <!-- Public stuff of other users -->
         <div class="task-list-container">
             <h2>Public tasks of other users</h2>
-            <h3>User vjones</h3>
+            {% for owner in other_user_tasks %}
+            <h3>User {{ owner }}</h3>
             <div class="task-list">
+                {% for task in other_user_tasks[owner] %}
                 <div class="task">
-                    <p class="task-description">Publish research paper on knot theory</p>
-                    <p class="task-metadata">In progress, last updated Fri Jan 12</p>
+                    <p class="task-description">{{ task["description"] }}</p>
+                    <p class="task-metadata">{{ task["status_str"] }}, last updated {{ task["updated_str"] }}.</p>
                 </div>
+                {% endfor %}
             </div>
-            <h3>User amartinez</h3>
-            <div class="task-list">
-                <div class="task">
-                    <p class="task-description">Improve water quality in Chicago river</p>
-                    <p class="task-metadata">Waiting, last updated Wed Feb 23, 1994</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
-
     </body>
 </html>

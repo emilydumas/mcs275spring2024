@@ -3,21 +3,30 @@
 # David Dumas
 from flask import Flask, render_template, request
 import time
+import timefmt
 import sqlite3
+import collections
 
 "Task list manager web application using SQLite"
 
 DB_FN = "taskgain.db"
 
+ST_WAIT = 0
+ST_PROGRESS = 1
+ST_COMPLETE = 2
+
 STATUS_DESC = {
-    0: "Waiting",
-    1: "In progress",
-    2: "Completed",
+    ST_WAIT: "Waiting",
+    ST_PROGRESS: "In progress",
+    ST_COMPLETE: "Completed",
 }
 
+SH_PRIVATE = 0
+SH_SHARED = 1
+
 SHARED_DESC = {
-    0: "private",
-    1: "shared",
+    SH_PRIVATE: "private",
+    SH_SHARED: "shared",
 }
 
 # Make a new Flask object, which represents our web server
@@ -38,7 +47,9 @@ def update_task(taskid):
 
 @app.route("/tasks/<username>/")
 def task_list_view(username):
+    now = time.time()
     con = sqlite3.connect(DB_FN)
+
     this_user_results = con.execute(
         """
         SELECT taskid, description, status, shared, updated_ts
@@ -47,24 +58,60 @@ def task_list_view(username):
         """,
         [username],
     )
-    this_user_tasks = []
+    this_user_tasks = {ST_WAIT: [], ST_PROGRESS: [], ST_COMPLETE: []}
     for row in this_user_results:
-        this_user_tasks.append(
+        status = row[2]
+        this_user_tasks[status].append(
             {
                 "taskid": row[0],
                 "description": row[1],
-                "status": row[2],
-                "shared": row[3],
+                "shared_code": row[3],
+                "shared_str": SHARED_DESC[row[3]],
                 "updated_ts": row[4],
+                "updated_str": timefmt.ts_fmt(row[4]),
+                "updated_delta_str": timefmt.tsdiff_fmt(now - row[4]),
             }
         )
-    # Now, this_user_tasks is a list of dictionaries
+
+    # Now, this_user_tasks is dictionary mapping status codes to lists of
+    # task data dictionaries, like
+    # {
+    #   0: [ {"description":..., }, {"description":...,} ],
+    #   1: [ {"description":..., }, {"description":...,} ],
+    #   2: [ {"description":..., }, {"description":...,} ],
+    #  }
+
+    other_user_results = con.execute(
+        """
+        SELECT taskid, owner, description, status, updated_ts
+        FROM tasks
+        WHERE owner != ? AND shared=1;
+        """,
+        [username],
+    )
+    other_user_tasks = collections.defaultdict(list)
+    for row in other_user_results:
+        owner = row[1]
+        other_user_tasks[owner].append(
+            {
+                "taskid": row[0],
+                "description": row[2],
+                "status_code": row[3],
+                "status_str": STATUS_DESC[row[3]],
+                "updated_ts": row[4],
+                "updated_str": timefmt.ts_fmt(row[4]),
+                "updated_delta_str": timefmt.tsdiff_fmt(now - row[4]),
+            }
+        )
+
     return render_template(
         "task_list_view.html",
         username=username,
         this_user_tasks=this_user_tasks,
-        STATUS_DESC=STATUS_DESC,
-        SHARED_DESC=SHARED_DESC,
+        other_user_tasks=other_user_tasks,
+        ST_WAIT=ST_WAIT,
+        ST_PROGRESS=ST_PROGRESS,
+        ST_COMPLETE=ST_COMPLETE,
     )
 
 
