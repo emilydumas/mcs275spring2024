@@ -120,7 +120,7 @@ def update_query_builder(params):
         if k not in UPDATABLE_COLS:
             raise ValueError("Column name '{}' not known or not allowed.".format(k))
         placeholders.append("{}=?".format(k))
-        args.append(params[k])
+        args.append(int(params[k]))
     return " AND ".join(placeholders), args
 
 
