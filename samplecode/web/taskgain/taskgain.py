@@ -1,7 +1,7 @@
 # MCS 275 Spring 2024 lecture 32
 # Sample web application
 # David Dumas
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import time
 import timefmt
 import sqlite3
@@ -25,24 +25,14 @@ SH_PRIVATE = 0
 SH_SHARED = 1
 
 SHARED_DESC = {
-    SH_PRIVATE: "private",
-    SH_SHARED: "shared",
+    SH_PRIVATE: "Private",
+    SH_SHARED: "Shared",
 }
+
+UPDATABLE_COLS = ["status", "shared"]
 
 # Make a new Flask object, which represents our web server
 app = Flask(__name__)
-
-
-@app.route("/task/<taskid>/update")
-def update_task(taskid):
-    con = sqlite3.connect(DB_FN)
-    con.execute(
-        "UPDATE tasks SET status=? WHERE taskid=?",
-        [int(request.values.get("status")), int(taskid)],
-    )
-    # if status=0 is at the end of the URL, this returns "0"
-    con.commit()
-    con.close()
 
 
 @app.route("/tasks/<username>/")
@@ -113,6 +103,45 @@ def task_list_view(username):
         ST_PROGRESS=ST_PROGRESS,
         ST_COMPLETE=ST_COMPLETE,
     )
+
+
+def update_query_builder(params):
+    """
+    Convert dictionary like {"status":1, "shared":0} to a SQL SET
+    clause like 'status=? AND shared=?' and a list of arguments like
+    [1,0].
+    """
+    if not params:
+        raise ValueError("No columns to update.")
+    placeholders = []
+    args = []
+    for k in params:
+        if k not in UPDATABLE_COLS:
+            raise ValueError("Column name '{}' not known or not allowed.".format(k))
+        placeholders.append("{}=?".format(k))
+        args.append(params[k])
+    return " AND ".join(placeholders), args
+
+
+@app.route("/task/<int:taskid>/update")
+def update(taskid):
+    "Perform an update on one row to change the status (TODO: to change other things too)"
+    con = sqlite3.connect(DB_FN)
+    query_params = dict(request.values)  # convert query params to a dict
+    username = query_params.pop("username")
+    try:
+        set_clause, set_args = update_query_builder(query_params)
+    except ValueError:
+        abort(400)  # tells Flask to return 400 BAD REQUEST
+    query = "UPDATE tasks SET " + set_clause + " WHERE taskid=?;"
+    print("Using query '{}'".format(query))
+    con.execute(
+        query,
+        set_args + [taskid],
+    )
+    con.commit()
+    con.close()
+    return redirect("/tasks/{}/".format(username), code=302)
 
 
 # Make sure we have a database, create if needed

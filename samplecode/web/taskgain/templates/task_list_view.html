@@ -13,54 +13,49 @@
         
         <div class="task-list-container">
             <h2>Task list for {{ username }}</h2>
-            <h3>Waiting</h3>
-            <div class="task-list">
-                {% for task in this_user_tasks[ST_WAIT] %}
-                <div class="task">
-                    <p class="task-description">{{ task["description"] }}</p>
-                    <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
-                    <ul class="task-actions">
-                        <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
-                        <li class="btn set-progress">Start</li>
-                        <li class="btn set-complete">Done</li>
-                        <li class="btn spacer"></li>
-                        <li class="btn public">Share</li>
-                    </ul>
+            {% for status_title, status_code in [ ("Waiting",ST_WAIT), ("In progress",ST_PROGRESS), ("Completed",ST_COMPLETE) ] %}
+                <h3>{{ status_title }}</h3>
+                <div class="task-list">
+                    {% for task in this_user_tasks[status_code] %}
+                    <div class="task">
+                        <p class="task-description">{{ task["description"] }}</p>
+                        <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
+                        <ul class="task-actions">
+                            {# Wait button #}
+                            {% if status_code == ST_WAIT %}
+                            <li class="btn set-wait btn-disabled">Wait</li>
+                            {% else %}
+                            <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0&username={{ username }}">Wait</a></li>
+                            {% endif %}
+
+                            {# Start/Resume button #}
+                            {% if status_code == ST_PROGRESS %}
+                            <li class="btn set-progress btn-disabled">Start</li>
+                            {% elif status_code == ST_COMPLETE %}
+                            <li class="btn set-progress"><a href="/task/{{ task["taskid"] }}/update?status=1&username={{ username }}">Resume</a></li>
+                            {% else %}
+                            <li class="btn set-progress"><a href="/task/{{ task["taskid"] }}/update?status=1&username={{ username }}">Start</a></li>
+                            {% endif %}                            
+
+                            {# Done button #}
+                            {% if status_code == ST_COMPLETE %}
+                            <li class="btn set-complete btn-disabled">Done</li>
+                            {% else %}
+                            <li class="btn set-complete"><a href="/task/{{ task["taskid"] }}/update?status=2&username={{ username }}">Done</a></li>
+                            {% endif %}                            
+                            <li class="btn spacer"></li>
+
+                            {# Share button #}
+                            {% if task["shared_code"] %}
+                            <li class="btn private"><a href="/task/{{ task["taskid"] }}/update?shared=0&username={{ username }}">Make private</a></li>
+                            {% else %}
+                            <li class="btn public"><a href="/task/{{ task["taskid"] }}/update?shared=1&username={{ username }}">Share</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            <h3>In progress</h3>
-            <div class="task-list">
-                {% for task in this_user_tasks[ST_PROGRESS] %}
-                <div class="task">
-                    <p class="task-description">{{ task["description"] }}</p>
-                    <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}})..</p>
-                    <ul class="task-actions">
-                        <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
-                        <li class="btn set-progress">Start</li>
-                        <li class="btn set-complete">Done</li>
-                        <li class="btn spacer"></li>
-                        <li class="btn public">Share</li>
-                    </ul>
-                </div>
-                {% endfor %}
-            </div>
-            <h3>Completed</h3>
-            <div class="task-list">
-                {% for task in this_user_tasks[ST_COMPLETE] %}
-                <div class="task">
-                    <p class="task-description">{{ task["description"] }}</p>
-                    <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_str"] }}.</p>
-                    <ul class="task-actions">
-                        <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0">Wait</a></li>
-                        <li class="btn set-progress">Start</li>
-                        <li class="btn set-complete">Done</li>
-                        <li class="btn spacer"></li>
-                        <li class="btn public">Share</li>
-                    </ul>
-                </div>
-                {% endfor %}
-            </div>                        
+            {% endfor %}
         </div>
 
         <!-- Public stuff of other users -->
