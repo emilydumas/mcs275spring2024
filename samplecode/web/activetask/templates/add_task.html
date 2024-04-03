@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>New task</title>
+        <link rel="stylesheet" href="/static/activetask.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Active</span><span>Task</span></h1>
+        <p>Share insights &amp; activate your team</p>
+        </div>
+
+    <form action="/task/new/submit" method="POST">
+        <p>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" size="72">
+        </p>
+        <p>
+        <label for="owner">Owner (username)</label>
+        <input type="text" id="owner" name="owner">
+        </p>
+        <p>
+        <input type="submit" value="Add task">
+        </p>
+    </form>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Add task</title>
+        <link rel="stylesheet" href="/static/taskgain.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Task</span><span>Gain</span></h1>
+        <p>Manage tasks, gain insight</p>
+        </div>
+
+    <div>
+    <form action="/task/new/submit" method="POST">
+        <p>
+        <label for="george">Description:</label>
+        <input id="george" name="description" type="text" size="72">
+        </p>
+        <p>
+        <label for="paul">Owner (username):</label>
+        <input id="paul" name="owner" type="text">
+        </p>
+        <p>
+        <input type="submit" value="Add task">
+        </p>
+    </form>
+</div>
+</body>
+</html>

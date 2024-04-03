@@ -16,44 +16,48 @@
             {% for status_title, status_code in [ ("Waiting",ST_WAIT), ("In progress",ST_PROGRESS), ("Completed",ST_COMPLETE) ] %}
                 <h3>{{ status_title }}</h3>
                 <div class="task-list">
-                    {% for task in this_user_tasks[status_code] %}
-                    <div class="task">
-                        <p class="task-description">{{ task["description"] }}</p>
-                        <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
-                        <ul class="task-actions">
-                            {# Wait button #}
-                            {% if status_code == ST_WAIT %}
-                            <li class="btn set-wait btn-disabled">Wait</li>
-                            {% else %}
-                            <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0&username={{ username }}">Wait</a></li>
-                            {% endif %}
+                    {% if (status_code != ST_COMPLETE) or (status_code == ST_COMPLETE and show_completed) %}
+                        {% for task in this_user_tasks[status_code] %}
+                        <div class="task">
+                            <p class="task-description">{{ task["description"] }}</p>
+                            <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
+                            <ul class="task-actions">
+                                {# Wait button #}
+                                {% if status_code == ST_WAIT %}
+                                <li class="btn set-wait btn-disabled">Wait</li>
+                                {% else %}
+                                <li class="btn set-wait"><a href="/task/{{ task["taskid"] }}/update?status=0&username={{ username }}">Wait</a></li>
+                                {% endif %}
 
-                            {# Start/Resume button #}
-                            {% if status_code == ST_PROGRESS %}
-                            <li class="btn set-progress btn-disabled">Start</li>
-                            {% elif status_code == ST_COMPLETE %}
-                            <li class="btn set-progress"><a href="/task/{{ task["taskid"] }}/update?status=1&username={{ username }}">Resume</a></li>
-                            {% else %}
-                            <li class="btn set-progress"><a href="/task/{{ task["taskid"] }}/update?status=1&username={{ username }}">Start</a></li>
-                            {% endif %}                            
+                                {# Start/Resume button #}
+                                {% if status_code == ST_PROGRESS %}
+                                <li class="btn set-progress btn-disabled">Start</li>
+                                {% elif status_code == ST_COMPLETE %}
+                                <li class="btn set-progress"><a href="/task/{{ task["taskid"] }}/update?status=1&username={{ username }}">Resume</a></li>
+                                {% else %}
+                                <li class="btn set-progress"><a href="/task/{{ task["taskid"] }}/update?status=1&username={{ username }}">Start</a></li>
+                                {% endif %}                            
 
-                            {# Done button #}
-                            {% if status_code == ST_COMPLETE %}
-                            <li class="btn set-complete btn-disabled">Done</li>
-                            {% else %}
-                            <li class="btn set-complete"><a href="/task/{{ task["taskid"] }}/update?status=2&username={{ username }}">Done</a></li>
-                            {% endif %}                            
-                            <li class="btn spacer"></li>
+                                {# Done button #}
+                                {% if status_code == ST_COMPLETE %}
+                                <li class="btn set-complete btn-disabled">Done</li>
+                                {% else %}
+                                <li class="btn set-complete"><a href="/task/{{ task["taskid"] }}/update?status=2&username={{ username }}">Done</a></li>
+                                {% endif %}                            
+                                <li class="btn spacer"></li>
 
-                            {# Share button #}
-                            {% if task["shared_code"] %}
-                            <li class="btn private"><a href="/task/{{ task["taskid"] }}/update?shared=0&username={{ username }}">Make private</a></li>
-                            {% else %}
-                            <li class="btn public"><a href="/task/{{ task["taskid"] }}/update?shared=1&username={{ username }}">Share</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    {% endfor %}
+                                {# Share button #}
+                                {% if task["shared_code"] %}
+                                <li class="btn private"><a href="/task/{{ task["taskid"] }}/update?shared=0&username={{ username }}">Make private</a></li>
+                                {% else %}
+                                <li class="btn public"><a href="/task/{{ task["taskid"] }}/update?shared=1&username={{ username }}">Share</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <ul class="task-actions"> <li class="btn"><a href="/tasks/{{username}}?show_completed=1">&#x25B6; Show completed tasks</a></li></ul>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

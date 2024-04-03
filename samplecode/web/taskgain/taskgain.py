@@ -1,7 +1,7 @@
 # MCS 275 Spring 2024 lecture 32
 # Sample web application
 # David Dumas
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, abort
 import time
 import timefmt
 import sqlite3
@@ -37,6 +37,9 @@ app = Flask(__name__)
 
 @app.route("/tasks/<username>/")
 def task_list_view(username):
+    show_completed = ("show_completed" in request.values) and (
+        request.values.get("show_completed") == "1"
+    )
     now = time.time()
     con = sqlite3.connect(DB_FN)
 
@@ -102,6 +105,7 @@ def task_list_view(username):
         ST_WAIT=ST_WAIT,
         ST_PROGRESS=ST_PROGRESS,
         ST_COMPLETE=ST_COMPLETE,
+        show_completed=show_completed,
     )
 
 
@@ -142,6 +146,34 @@ def update(taskid):
     con.commit()
     con.close()
     return redirect("/tasks/{}/".format(username), code=302)
+
+
+@app.route("/task/new/")
+def add_task_form():
+    "Display the form to create a new task"
+    return render_template("add_task_form.html")
+
+
+@app.route("/task/new/submit", methods=["GET", "POST"])
+def add_task():
+    "Process form submission"
+    now = time.time()
+    con = sqlite3.connect(DB_FN)
+    con.execute(
+        """
+                INSERT INTO tasks (description,owner,created_ts,updated_ts)
+                VALUES (?,?,?,?);
+                """,
+        [
+            request.values.get("description"),
+            request.values.get("owner"),
+            now,
+            now,
+        ],
+    )
+    con.commit()
+    con.close()
+    return redirect("/task/new/", code=302)
 
 
 # Make sure we have a database, create if needed

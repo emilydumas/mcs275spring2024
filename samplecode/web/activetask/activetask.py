@@ -38,6 +38,9 @@ app = Flask(__name__)
 # then this function will be called as task_list_view(username="ddumas")
 @app.route("/tasks/<username>/")
 def task_list_view(username):  # Logical name for this action
+    show_completed = ("show_completed" in request.values) and (
+        request.values.get("show_completed") == "1"
+    )
     now = time.time()
     con = sqlite3.connect(DB_FN)
 
@@ -103,6 +106,7 @@ def task_list_view(username):  # Logical name for this action
         ST_WAIT=ST_WAIT,
         ST_PROGRESS=ST_PROGRESS,
         ST_COMPLETE=ST_COMPLETE,
+        show_completed=show_completed,
     )
 
 
@@ -124,6 +128,13 @@ def update_query_builder(params):
     return " AND ".join(placeholders), args
 
 
+# query parameters include
+# username  -> decide where to redirect
+# status -> SQL
+# shared -> SQL
+# UPDATE tasks SET shared=1 WHERE
+# UPDATE tasks SET status=0 ...
+# UPDATE tasks SET shared=1 AND status=0
 @app.route("/task/<int:taskid>/update")
 def update(taskid):
     "Perform an update on one row to change the status (TODO: to change other things too)"
@@ -143,6 +154,29 @@ def update(taskid):
     con.commit()
     con.close()
     return redirect("/tasks/{}/".format(username), code=302)
+
+
+@app.route("/task/new/")
+def add_task_form():
+    "Display the form to create a new task"
+    return render_template("add_task.html")  # will submit data to /task/new/submit
+
+
+@app.route("/task/new/submit", methods=["GET", "POST"])
+def add_task():
+    "Process form submission"
+    now = time.time()
+    con = sqlite3.connect(DB_FN)
+    con.execute(
+        """
+                INSERT INTO tasks (description,owner,created_ts,updated_ts)
+                VALUES (?,?,?,?);
+                """,
+        [request.values.get("description"), request.values.get("owner"), now, now],
+    )
+    con.commit()
+    con.close()
+    return redirect("/task/new/", code=302)
 
 
 # Make sure we have a database, create if needed
