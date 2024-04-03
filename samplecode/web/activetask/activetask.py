@@ -1,4 +1,4 @@
-# MCS 275 spring 2024 lecture 32
+# MCS 275 spring 2024 lecture 32-34
 # Sample web application (task list)
 # David Dumas
 from flask import Flask, render_template, request, redirect, abort
