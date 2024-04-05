@@ -124,7 +124,7 @@ def update_query_builder(params):
             raise ValueError("Column name '{}' not known or not allowed.".format(k))
         placeholders.append("{}=?".format(k))
         args.append(int(params[k]))
-    return " AND ".join(placeholders), args
+    return ", ".join(placeholders), args
 
 
 @app.route("/task/<int:taskid>/update")
@@ -137,11 +137,12 @@ def update(taskid):
         set_clause, set_args = update_query_builder(query_params)
     except ValueError:
         abort(400)  # tells Flask to return 400 BAD REQUEST
-    query = "UPDATE tasks SET " + set_clause + " WHERE taskid=?;"
+    # Make the full query, which also always updates the timestamp
+    query = "UPDATE tasks SET " + set_clause + ", updated_ts=? WHERE taskid=?;"
     print("Using query '{}'".format(query))
     con.execute(
         query,
-        set_args + [taskid],
+        set_args + [time.time(), taskid],
     )
     con.commit()
     con.close()
