@@ -34,10 +34,28 @@ UPDATABLE_COLS = ["status", "shared"]
 app = Flask(__name__)
 
 
+@app.route("/")
+def front():
+    "Front page"
+    # if a query parameter `fail` is given, then
+    # the template will show an error message too.
+    return render_template("front.html", fail=request.values.get("fail"))
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    "Login action: sends user to task view"
+    username = request.values.get("username")
+    if username is None or (not username.strip()):
+        return redirect("/?fail=1", code=302)
+    return redirect("/tasks/{}/".format(username), code=302)
+
+
 # go to /tasks/ddumas/
 # then this function will be called as task_list_view(username="ddumas")
 @app.route("/tasks/<username>/")
 def task_list_view(username):  # Logical name for this action
+    "View of one user's owned tasks and all public ones"
     show_completed = ("show_completed" in request.values) and (
         request.values.get("show_completed") == "1"
     )
@@ -48,7 +66,8 @@ def task_list_view(username):  # Logical name for this action
         """
         SELECT taskid, description, status, shared, updated_ts
         FROM tasks
-        WHERE owner=?;
+        WHERE owner=?
+        ORDER BY created_ts DESC;
         """,
         [username],
     )
@@ -79,7 +98,8 @@ def task_list_view(username):  # Logical name for this action
         """
         SELECT taskid, owner, description, status, updated_ts
         FROM tasks
-        WHERE owner != ? AND shared=1;
+        WHERE owner != ? AND shared=1
+        ORDER BY created_ts DESC;
         """,
         [username],
     )

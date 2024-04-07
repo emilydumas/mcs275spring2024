@@ -19,7 +19,7 @@
                         {% for task in this_user_tasks[status_code] %}
                             <div class="task">
                                 <p class="task-description">{{ task["description"] }}</p>
-                                <p class="task-metadata">{{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
+                                <p class="task-metadata">#{{ task["taskid"] }} - {{ task["shared_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
                                 <ul class="task-actions">
                                     {# Wait button #}
                                     {% if status_code == ST_WAIT %}

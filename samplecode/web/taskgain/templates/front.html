@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TaskGain</title>
+        <link rel="stylesheet" href="/static/taskgain.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Task</span><span>Gain</span></h1>
+        <p>Manage tasks, gain insight</p>
+        </div>
+
+    <div>
+    <form class="loginform" action="/login" method="POST">
+        <p>
+        <label for="username">Username:</label>
+        <input id="username" name="username" type="text">
+        </p>
+        <p>
+        <input type="submit" class="submit" value="Proceed">
+        </p>
+    </form>
+    {% if fail %}
+      <p class="error">Login failed.  Use a nonempty username.</p>
+    {% endif %}
+</div>
+</body>
+</html>

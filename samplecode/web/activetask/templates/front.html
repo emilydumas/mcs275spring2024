@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ActiveTask</title>
+        <link rel="stylesheet" href="/static/activetask.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Active</span><span>Task</span></h1>
+        <p>Share insights &amp; activate your team</p>
+        </div>
+
+    <div>
+    <form class="loginform" action="/login" method="POST">
+        <p>
+        <label for="username">Username:</label>
+        <input id="username" name="username" type="text">
+        </p>
+        <p>
+        <input type="submit" class="submit" value="Proceed">
+        </p>
+    </form>
+    {% if fail %}
+      <p class="error">Login failed.  Use a nonempty username.</p>
+    {% endif %}
+</div>
+</body>
+</html>
