@@ -8,6 +8,7 @@ import sqlite3
 import collections
 
 "Task list manager web application using SQLite"
+__version__ = "1.0"
 
 DB_FN = "taskgain.db"
 

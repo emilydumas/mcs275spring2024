@@ -8,6 +8,7 @@ import collections
 import sqlite3
 
 "Task list web application using sqlite"
+__version__ = "1.0"
 
 DB_FN = "activetask.db"
 
