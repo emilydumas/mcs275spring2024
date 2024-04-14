@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TaskGain</title>
+        <link rel="stylesheet" href="/static/taskgain.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Task</span><span>Gain</span></h1>
+        <p>Manage tasks, gain insight</p>
+        </div>
+
+    <div class="task-list-container"></div>
+        <h2>Task #{{ taskid }}: {{ description }} </h2>
+        <ul>
+            <li><strong>Owner:</strong> <a href="/tasks/{{ owner }}/">{{ owner }}</a></li>
+            <li><strong>State:</strong> {{ status_str }}</li>
+            <li><strong>Privacy:</strong> {{ shared_str }}</li>
+            <li><strong>Created:</strong> {{ created_str }}</li>
+            <li><strong>Last updated:</strong> {{ updated_str }}</li>
+        </ul>
+</div>
+</body>
+</html>
