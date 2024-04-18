@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ActiveTask</title>
+        <link rel="stylesheet" href="/static/activetask.css">
+    </head>
+    <body>
+        <div class="logo-header">
+        <h1><span>Active</span><span>Task</span></h1>
+        <p>Share insights &amp; activate your team</p>
+        </div>
+        
+        <div class="task-list-container">
+            <h2>Tasks created on {{year}}-{{month}}-{{day}}</h2>
+            <div class="task-list">
+                {% for task in created_tasks %}
+                    <div class="task">
+                        <p class="task-description">{{ task["description"] }}</p>
+                        <p class="task-metadata">#{{ task["taskid"] }} - Owner {{ task["owner"] }} - {{ task["shared_str"] }} - {{ task["status_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
+                    </div>
+                {% else %}
+                    {# The else on a for loop in jinja runs if the list is EMPTY #}
+                    <ul class="task-actions"> <li class="btn btn-disabled">None</a></li></ul>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="task-list-container">
+            <h2>Tasks last updated on {{year}}-{{month}}-{{day}}</h2>
+            <div class="task-list">
+                {% for task in updated_tasks %}
+                    <div class="task">
+                        <p class="task-description">{{ task["description"] }}</p>
+                        <p class="task-metadata">#{{ task["taskid"] }} - Owner {{ task["owner"] }} - {{ task["shared_str"] }} - {{ task["status_str"] }}, last updated {{ task["updated_delta_str"] }} ({{ task["updated_str"]}}).</p>
+                    </div>
+                {% else %}
+                    {# The else on a for loop in jinja runs if the list is EMPTY #}
+                    <ul class="task-actions"> <li class="btn btn-disabled">None</a></li></ul>
+                {% endfor %}
+            </div>
+        </div>        
+
+    </body>
+</html>
