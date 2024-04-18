@@ -9,7 +9,11 @@ import sqlite3
 import datetime
 
 "Task list web application using sqlite"
-__version__ = "1.1"
+__version__ = "1.2"
+# Versions:
+#   1.0 last lecture demo
+#   1.1 with worksheet 13 solution
+#   1.2 with homework 13 solution
 
 DB_FN = "activetask.db"
 
@@ -33,17 +37,19 @@ SHARED_DESC = {
 
 UPDATABLE_COLS = ["status", "shared"]
 
-def timestamp_range_for_day(year,month,day):
+
+def timestamp_range_for_day(year, month, day):
     """
     Return the timestamps when a calendar day
     begins and ends.
     """
-    ts0 = datetime.datetime(year,month,day).timestamp()
-    ts1 = (datetime.datetime(year,month,day)+datetime.timedelta(days=1)).timestamp()
-    return ts0,ts1
+    ts0 = datetime.datetime(year, month, day).timestamp()
+    ts1 = (datetime.datetime(year, month, day) + datetime.timedelta(days=1)).timestamp()
+    return ts0, ts1
 
 
 app = Flask(__name__)
+
 
 @app.route("/")
 def front():
@@ -60,6 +66,71 @@ def login():
     if username is None or (not username.strip()):
         return redirect("/?fail=1", code=302)
     return redirect("/tasks/{}/".format(username), code=302)
+
+
+@app.route("/audit/troubled/")
+def troubled_task_audit():
+    "Show troubled tasks"
+    now = time.time()
+    week_ago = now - 7 * 24 * 60 * 60
+    con = sqlite3.connect(DB_FN)
+
+    stale_results = con.execute(
+        """
+        SELECT taskid, description, owner, status, shared, updated_ts
+        FROM tasks
+        WHERE status = ? AND created_ts <= ?
+        ORDER BY created_ts DESC;
+        """,
+        [ST_WAIT, week_ago],
+    )
+    stale_tasks = []
+    for row in stale_results:
+        stale_tasks.append(
+            {
+                "taskid": row[0],
+                "description": row[1],
+                "owner": row[2],
+                "status": row[3],
+                "status_str": STATUS_DESC[row[3]],
+                "shared_code": row[4],
+                "shared_str": SHARED_DESC[row[4]],
+                "updated_ts": row[5],
+                "updated_str": timefmt.ts_fmt(row[5]),
+                "updated_delta_str": timefmt.tsdiff_fmt(now - row[5]),
+            }
+        )
+
+    lrt_results = con.execute(
+        """
+        SELECT taskid, description, owner, status, shared, updated_ts
+        FROM tasks
+        WHERE status = ? AND updated_ts <= ?
+        ORDER BY created_ts DESC;
+        """,
+        [ST_PROGRESS, week_ago],
+    )
+    lrt_tasks = []
+    for row in lrt_results:
+        lrt_tasks.append(
+            {
+                "taskid": row[0],
+                "description": row[1],
+                "owner": row[2],
+                "status": row[3],
+                "status_str": STATUS_DESC[row[3]],
+                "shared_code": row[4],
+                "shared_str": SHARED_DESC[row[4]],
+                "updated_ts": row[5],
+                "updated_str": timefmt.ts_fmt(row[5]),
+                "updated_delta_str": timefmt.tsdiff_fmt(now - row[5]),
+            }
+        )
+    return render_template(
+        "troubled_task_audit.html",
+        stale_tasks=stale_tasks,
+        lrt_tasks=lrt_tasks,
+    )
 
 
 @app.route("/task/<int:taskid>/")
@@ -94,14 +165,15 @@ def single_task_view(taskid):
         updated_ts=taskdata[4],
         updated_str=timefmt.ts_fmt(taskdata[4]),
         created_ts=taskdata[5],
-        created_str=timefmt.ts_fmt(taskdata[5])
+        created_str=timefmt.ts_fmt(taskdata[5]),
     )
 
+
 @app.route("/reports/day/<int:year>/<int:month>/<int:day>/")
-def on_this_day(year,month,day):
+def on_this_day(year, month, day):
     "View tasks created or updated on a certain day"
     now = time.time()
-    ts0,ts1 = timestamp_range_for_day(year,month,day)
+    ts0, ts1 = timestamp_range_for_day(year, month, day)
     con = sqlite3.connect(DB_FN)
 
     created_results = con.execute(
@@ -111,7 +183,7 @@ def on_this_day(year,month,day):
         WHERE created_ts >= ? AND created_ts < ?
         ORDER BY created_ts DESC;
         """,
-        [ts0,ts1],
+        [ts0, ts1],
     )
     created_tasks = []
     for row in created_results:
@@ -136,7 +208,7 @@ def on_this_day(year,month,day):
         WHERE updated_ts >= ? AND updated_ts < ?
         ORDER BY created_ts DESC;
         """,
-        [ts0,ts1],
+        [ts0, ts1],
     )
     updated_tasks = []
     for row in updated_results:
@@ -154,7 +226,7 @@ def on_this_day(year,month,day):
                 "updated_delta_str": timefmt.tsdiff_fmt(now - row[5]),
             }
         )
-        
+
     return render_template(
         "on_this_day_view.html",
         year="{:04d}".format(year),
@@ -163,6 +235,7 @@ def on_this_day(year,month,day):
         created_tasks=created_tasks,
         updated_tasks=updated_tasks,
     )
+
 
 # go to /tasks/ddumas/
 # then this function will be called as task_list_view(username="ddumas")
@@ -301,7 +374,7 @@ def add_task():
                 """,
         [request.values.get("description"), request.values.get("owner"), now, now],
     )
-    taskid=con.execute("SELECT last_insert_rowid();").fetchone()[0]
+    taskid = con.execute("SELECT last_insert_rowid();").fetchone()[0]
     con.commit()
     con.close()
     return redirect("/task/{}/".format(taskid), code=302)
