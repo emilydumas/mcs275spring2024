@@ -1,6 +1,6 @@
 # MCS 275 Spring 2024 Lectures 10-
 # (Adapted from by 2021-2023 MCS 275 course materials)
-# David Dumas
+# Emily Dumas
 """Module for dealing with mazes represented as
 rectangular arrays of cells, each of which can be
 marked "free" or "blocked"."""

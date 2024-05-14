@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Lecture 27
-# David Dumas
+# Emily Dumas
 "List top ten power plants for each fuel"
 
 import sqlite3

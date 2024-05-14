@@ -1,6 +1,6 @@
 # MCS 275 Spring 2024 lecture 32-34
 # Sample web application
-# David Dumas
+# Emily Dumas
 from flask import Flask, render_template, request, redirect, abort
 import time
 import timefmt

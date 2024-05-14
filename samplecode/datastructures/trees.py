@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Lectures 15-17 and Worksheets 7-8
-# David Dumas
+# Emily Dumas
 "Classes representing tree-like data structures"
 
 import json

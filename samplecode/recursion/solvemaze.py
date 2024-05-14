@@ -1,6 +1,6 @@
 "Solve a maze by recursion with backtracking"
 # MCS 275 Spring 2024 Lecture 11
-# David Dumas
+# Emily Dumas
 
 import maze
 

@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Lecture 28
-# David Dumas
+# Emily Dumas
 "Task list manager using SQLite for storage"
 
 import sqlite3

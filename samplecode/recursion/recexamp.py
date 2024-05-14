@@ -1,6 +1,6 @@
 # MCS 275 Spring 2024 Lectures 8 to 10
 # Recursion examples
-# David Dumas
+# Emily Dumas
 
 call_counts = {"fib": 0}
 

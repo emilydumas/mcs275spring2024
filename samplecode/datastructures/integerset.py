@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Lecture 17
-# David Dumas
+# Emily Dumas
 "Classes storing sets of distinct integers"
 
 from trees import BST

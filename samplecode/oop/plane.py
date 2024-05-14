@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Lectures 3 and 4
-# David Dumas
+# Emily Dumas
 "Plane geometry classes"
 
 # NOTE: All the .verbose and print() stuff in the methods below is used to

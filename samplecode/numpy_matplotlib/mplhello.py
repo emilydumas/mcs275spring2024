@@ -1,6 +1,6 @@
 # Matplotlib "hello world"
 # MCS 275 Spring 2024 Lecture 24
-# David Dumas
+# Emily Dumas
 import numpy as np
 import matplotlib.pyplot as plt
 

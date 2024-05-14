@@ -1,6 +1,6 @@
 # SQLite first example
 # MCS 275 Spring 2024 Lecture 26
-# David Dumas
+# Emily Dumas
 "Create a database, table, and some rows.  Read them back."
 
 import sqlite3

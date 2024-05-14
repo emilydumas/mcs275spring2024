@@ -1,6 +1,6 @@
 "Make a CSV of the UIC academic calendar"
 # MCS 275 Spring 2024
-# David Dumas
+# Emily Dumas
 import bs4
 import time
 import urllib
