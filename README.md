@@ -8,6 +8,6 @@ Some course documents (e.g. syllabus, worksheets, homework) are also stored here
 
 ## Contributors
 
-* David Dumas (ddumas@uic.edu) (instructor)
+* Emily Dumas (ddumas@uic.edu) (instructor)
 
-Some materials are based on those prepared for previous iterations of the course ([2021](https://github.com/daviddumas/mcs275spring2021), [2022](https://github.com/daviddumas/mcs275spring2022), [2023](https://github.com/daviddumas/mcs275spring2023)) and thus may include contributions from staff for those courses.
+Some materials are based on those prepared for previous iterations of the course ([2021](https://github.com/emilydumas/mcs275spring2021), [2022](https://github.com/emilydumas/mcs275spring2022), [2023](https://github.com/emilydumas/mcs275spring2023)) and thus may include contributions from staff for those courses.
