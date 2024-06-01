@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Project 2 Starter Pack
-# David Dumas
+# Emily Dumas
 """
 Class library for working with labyrinths---maze-like structures
 with walls, open spaces, and various kinds of obstacles.

@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Project 2 Solution
-# David Dumas
+# Emily Dumas
 """
 Depth-first search for a solution to Escape of the Minotaur
 and related functions checking labyrinths for certain conditions

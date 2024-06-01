@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024
-# David Dumas
+# Emily Dumas
 
 # NOTE: This _experimental_ labyrinth game/simulation is
 # experimental and is not held to the same standard of
@@ -27,7 +27,7 @@ class Pref:
 class HelpWindow(Toplevel):
     """
     ESCAPE OF THE MINOTAUR v1.1 (Feb 2024)
-    David Dumas
+    Emily Dumas
 
     Labyrinth editor/simulator created for MCS 275 Spring 2024 project 2 at UIC.
 

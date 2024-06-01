@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Project 3 Solution Stress Test
-# David Dumas
+# Emily Dumas
 "Make a big `BlockNode` tree"
 
 from bstore import BlockNode

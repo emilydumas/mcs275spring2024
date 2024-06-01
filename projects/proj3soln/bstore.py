@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Project 3 Solution
-# David Dumas
+# Emily Dumas
 "Module allowing one to store a sequence as a tree of blocks"
 
 

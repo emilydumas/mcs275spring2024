@@ -1,5 +1,5 @@
 # MCS 275 Spring 2024 Project 3 Solution
-# David Dumas
+# Emily Dumas
 "Demo and tests of the BlockNode class"
 
 from bstore import BlockNode
